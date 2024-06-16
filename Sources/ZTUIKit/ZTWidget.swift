@@ -67,11 +67,18 @@ public struct ZTWidgetBuilder {
     public static func buildBlock(_ widgets: any ZTWidgetProtocol...) -> [any ZTWidgetProtocol] {
         widgets
     }
-
+    
+#if compiler(>=5.4)
     // Support for conditional blocks (if statements without else)
     static func buildOptional(_ widgets: [any ZTWidgetProtocol]?) -> [any ZTWidgetProtocol] {
         widgets ?? []
     }
+#else
+    // Support for conditional blocks (if statements without else)
+    static func buildIf(_ widgets: [any ZTWidgetProtocol]?) -> [any ZTWidgetProtocol] {
+        widgets ?? []
+    }
+#endif
 
     // Support for conditional blocks (if-else statements)
     static func buildEither(first widgets: [any ZTWidgetProtocol]) -> [any ZTWidgetProtocol] {
