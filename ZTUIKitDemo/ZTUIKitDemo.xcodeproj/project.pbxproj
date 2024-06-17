@@ -15,7 +15,6 @@
 		971D905B2C0F69BF00EE3A49 /* ZTWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D90572C0F69BF00EE3A49 /* ZTWidget.swift */; };
 		971D905C2C0F69BF00EE3A49 /* ZTUIKit.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 971D90582C0F69BF00EE3A49 /* ZTUIKit.podspec */; };
 		971D905F2C0F6C0300EE3A49 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 971D905E2C0F6C0300EE3A49 /* SnapKit */; };
-		971D90612C0F6C0300EE3A49 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 971D90602C0F6C0300EE3A49 /* SnapKit-Dynamic */; };
 		971D90642C0F6C2600EE3A49 /* ZTChain in Frameworks */ = {isa = PBXBuildFile; productRef = 971D90632C0F6C2600EE3A49 /* ZTChain */; };
 /* End PBXBuildFile section */
 
@@ -38,7 +37,6 @@
 			files = (
 				971D90642C0F6C2600EE3A49 /* ZTChain in Frameworks */,
 				971D905F2C0F6C0300EE3A49 /* SnapKit in Frameworks */,
-				971D90612C0F6C0300EE3A49 /* SnapKit-Dynamic in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,7 +109,6 @@
 			name = ZTUIKitDemo;
 			packageProductDependencies = (
 				971D905E2C0F6C0300EE3A49 /* SnapKit */,
-				971D90602C0F6C0300EE3A49 /* SnapKit-Dynamic */,
 				971D90632C0F6C2600EE3A49 /* ZTChain */,
 			);
 			productName = ZTUIKitDemo;
@@ -418,11 +415,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 971D905D2C0F6C0300EE3A49 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
-		};
-		971D90602C0F6C0300EE3A49 /* SnapKit-Dynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 971D905D2C0F6C0300EE3A49 /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = "SnapKit-Dynamic";
 		};
 		971D90632C0F6C2600EE3A49 /* ZTChain */ = {
 			isa = XCSwiftPackageProductDependency;

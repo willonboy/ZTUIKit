@@ -58,47 +58,82 @@ extension UIView {
     }
 }
 
+/// Like React JSX <React.Fragment>
+public class ZTWrapperWidget : UIView {
+    open var subWidgets: [any ZTWidgetProtocol] = []
+    public required init(_ widgets: [any ZTWidgetProtocol]) {
+        self.subWidgets = widgets
+        super.init(frame: .zero)
+    }
+    
+    public required init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
+        self.subWidgets = widgets()
+        super.init(frame: .zero)
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 #if compiler(>=5.4)
 @resultBuilder
 #else
 @_functionBuilder
 #endif
 public struct ZTWidgetBuilder {
+    
+    public static func buildBlock(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
+        widget
+    }
+    
     public static func buildBlock(_ widgets: any ZTWidgetProtocol...) -> [any ZTWidgetProtocol] {
         widgets
     }
     
 #if compiler(>=5.4)
     // Support for conditional blocks (if statements without else)
-    static func buildOptional(_ widgets: [any ZTWidgetProtocol]?) -> [any ZTWidgetProtocol] {
-        widgets ?? []
+    static func buildOptional(_ widget: (any ZTWidgetProtocol)?) -> any ZTWidgetProtocol {
+        guard widget != nil else {return ZTWrapperWidget([])}
+        return widget!
     }
+    
 #else
     // Support for conditional blocks (if statements without else)
-    static func buildIf(_ widgets: [any ZTWidgetProtocol]?) -> [any ZTWidgetProtocol] {
-        widgets ?? []
+    static func buildIf(_ widget: (any ZTWidgetProtocol)?) -> any ZTWidgetProtocol {
+        guard widget != nil else {return ZTWrapperWidget([])}
+        return widget!
     }
 #endif
 
     // Support for conditional blocks (if-else statements)
-    static func buildEither(first widgets: [any ZTWidgetProtocol]) -> [any ZTWidgetProtocol] {
-        widgets
+    static func buildEither(first widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
+        widget
     }
 
-    static func buildEither(second widgets: [any ZTWidgetProtocol]) -> [any ZTWidgetProtocol] {
-        widgets
+    static func buildEither(second widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
+        widget
     }
 
     // Support for loops (for-in statements)
-    static func buildArray(_ widgets: [[any ZTWidgetProtocol]]) -> [any ZTWidgetProtocol] {
-        widgets.flatMap { $0 }
+    static func buildArray(_ widgets: [any ZTWidgetProtocol]) -> any ZTWidgetProtocol {
+        ZTWrapperWidget(widgets)
     }
 
     // Support for limited availability (e.g., #available)
-    static func buildLimitedAvailability(_ widgets: [any ZTWidgetProtocol]) -> [any ZTWidgetProtocol] {
-        widgets
+    static func buildLimitedAvailability(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
+        widget
     }
 
+    // Support for limited availability (e.g., #available)
+    static func buildLimitedAvailability(_ widgets: [any ZTWidgetProtocol]) -> any ZTWidgetProtocol {
+        ZTWrapperWidget(widgets)
+    }
+
+    // Support for final result transformation
+    static func buildFinalResult(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
+        widget
+    }
+    
     // Support for final result transformation
     static func buildFinalResult(_ widgets: [any ZTWidgetProtocol]) -> [any ZTWidgetProtocol] {
         widgets
@@ -108,27 +143,42 @@ public struct ZTWidgetBuilder {
 public protocol ZTContainerWidgetProtocol : ZTWidgetProtocol {
     var subWidgets: [any ZTWidgetProtocol] { get set }
     init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol])
+    func buildSubWidgets(_ widgets:[any ZTWidgetProtocol]) -> Void
     func addWidgets(_ widgets:[any ZTWidgetProtocol]) -> Void
     func removeWidgets(_ widgets:[any ZTWidgetProtocol]) -> Void
 }
 
 extension ZTContainerWidgetProtocol where Self : UIView {
-    public func addWidgets(_ widgets:[any ZTWidgetProtocol]) -> Void {
+    public func addWidgets(_ widgets: [any ZTWidgetProtocol]) {
         for widget in widgets {
-            widget.willBeAdded()
-            subWidgets.append(widget)
-            self.addSubview(widget.view)
-            widget.didAdded()
-            _ = widget.render()
+            if let wrapperWidget = widget as? ZTWrapperWidget {
+                addWidgets(wrapperWidget.subWidgets)
+            } else {
+                widget.willBeAdded()
+                subWidgets.append(widget)
+                self.addSubview(widget.view)
+                widget.didAdded()
+                _ = widget.render()
+            }
         }
     }
     
-    public func removeWidgets(_ widgets:[any ZTWidgetProtocol]) -> Void {
+    public func removeWidgets(_ widgets: [any ZTWidgetProtocol]) {
         for widget in widgets {
             widget.willBeRemoved()
             widget.view.removeFromSuperview()
             widget.didRemoved()
             subWidgets.removeAll { $0 === widget }
+        }
+    }
+    
+    public func buildSubWidgets(_ widgets: [any ZTWidgetProtocol]) {
+        for widget in widgets {
+            if let wrapperWidget = widget as? ZTWrapperWidget {
+                buildSubWidgets(wrapperWidget.subWidgets)
+            } else {
+                subWidgets.append(widget)
+            }
         }
     }
 }
@@ -137,8 +187,8 @@ open class ZTContainerWidget : UIView, ZTContainerWidgetProtocol {
     open var subWidgets: [any ZTWidgetProtocol] = []
     
     public required init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
-        self.subWidgets = widgets()
         super.init(frame: .zero)
+        self.buildSubWidgets(widgets())
     }
     
     public required init?(coder: NSCoder) {
@@ -160,8 +210,8 @@ open class ZTScrollViewWidget: UIScrollView, ZTContainerWidgetProtocol {
     open var subWidgets: [any ZTWidgetProtocol] = []
     
     public required init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
-        self.subWidgets = widgets()
         super.init(frame: .zero)
+        self.buildSubWidgets(widgets())
     }
     
     public required init(coder: NSCoder) {
@@ -183,8 +233,8 @@ open class ZTHStackWidget: UIStackView, ZTContainerWidgetProtocol {
     open var subWidgets: [any ZTWidgetProtocol] = []
     
     public required init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
-        self.subWidgets = widgets()
         super.init(frame: .zero)
+        self.buildSubWidgets(widgets())
         
         self.axis = .horizontal
     }
@@ -208,8 +258,8 @@ open class ZTVStackWidget: UIStackView, ZTContainerWidgetProtocol {
     open var subWidgets: [any ZTWidgetProtocol] = []
     
     public required init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
-        self.subWidgets = widgets()
         super.init(frame: .zero)
+        self.buildSubWidgets(widgets())
         
         self.axis = .vertical
     }
