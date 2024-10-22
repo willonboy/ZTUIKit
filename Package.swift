@@ -21,5 +21,5 @@ let package = Package(
             name: "ZTUIKit",
             dependencies: []),
     ],
-    swiftLanguageVersions: [.v5_1]
+    swiftLanguageVersions: [.version("5.1")]
 )

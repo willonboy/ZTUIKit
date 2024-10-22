@@ -141,8 +141,8 @@
 			mainGroup = 971D90312C0F692F00EE3A49;
 			packageReferences = (
 				971D905D2C0F6C0300EE3A49 /* XCRemoteSwiftPackageReference "SnapKit" */,
-				971D90622C0F6C2600EE3A49 /* XCLocalSwiftPackageReference "../../Swift_Libs/ZTChain" */,
-				971D90652C0F6C3C00EE3A49 /* XCLocalSwiftPackageReference "../../Swift_Libs/ZTStyle" */,
+				971D90622C0F6C2600EE3A49 /* XCLocalSwiftPackageReference "https://github.com/willonboy/ZTChain" */,
+				971D90652C0F6C3C00EE3A49 /* XCLocalSwiftPackageReference "https://github.com/willonboy/ZTStyle" */,
 			);
 			productRefGroup = 971D903B2C0F693000EE3A49 /* Products */;
 			projectDirPath = "";
@@ -389,13 +389,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		971D90622C0F6C2600EE3A49 /* XCLocalSwiftPackageReference "../../Swift_Libs/ZTChain" */ = {
+		971D90622C0F6C2600EE3A49 /* XCLocalSwiftPackageReference "https://github.com/willonboy/ZTChain" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../Swift_Libs/ZTChain;
+			relativePath = "https://github.com/willonboy/ZTChain";
 		};
-		971D90652C0F6C3C00EE3A49 /* XCLocalSwiftPackageReference "../../Swift_Libs/ZTStyle" */ = {
+		971D90652C0F6C3C00EE3A49 /* XCLocalSwiftPackageReference "https://github.com/willonboy/ZTStyle" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../Swift_Libs/ZTStyle;
+			relativePath = "https://github.com/willonboy/ZTStyle";
 		};
 /* End XCLocalSwiftPackageReference section */
 
