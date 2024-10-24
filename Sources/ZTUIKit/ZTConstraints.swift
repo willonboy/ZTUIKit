@@ -28,12 +28,6 @@ extension UIView {
         }
     }
 
-    @discardableResult
-    fileprivate func zt_makeConstraints(_ closure: @escaping LayoutClosure) -> Self {
-        self.layoutClosures = closure
-        return self
-    }
-
     public func executeLayoutClosures() {
         if let closures = self.layoutClosures {
             self.snp.makeConstraints { make in
@@ -45,7 +39,6 @@ extension UIView {
 }
 
 extension ZTWrapper where Subject: UIView {
-    
     @discardableResult
     public func makeConstraints(_ closure: @escaping LayoutClosure) -> Self {
         self.subject.layoutClosures = closure
