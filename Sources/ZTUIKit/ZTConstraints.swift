@@ -44,42 +44,16 @@ extension UIView {
     }
 }
 
-
-extension UIView {
-    @discardableResult
-    public func zt_remakeConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
-        self.snp.remakeConstraints { make in
-            closure(make)
-        }
-        return self
-    }
-    
-    @discardableResult
-    public func zt_updateConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
-        self.snp.updateConstraints { make in
-            closure(make)
-        }
-        return self
-    }
-    
-    @discardableResult
-    public func zt_removeConstraints() -> Self {
-        self.snp.removeConstraints()
-        return self
-    }
-}
-
-
 extension ZTWrapper where Subject: UIView {
     
     @discardableResult
-    public func zt_makeConstraints(_ closure: @escaping LayoutClosure) -> Self {
+    public func makeConstraints(_ closure: @escaping LayoutClosure) -> Self {
         self.subject.layoutClosures = closure
         return self
     }
     
     @discardableResult
-    public func zt_remakeConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
+    public func remakeConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
         self.subject.snp.remakeConstraints { make in
             closure(make)
         }
@@ -87,7 +61,7 @@ extension ZTWrapper where Subject: UIView {
     }
     
     @discardableResult
-    public func zt_updateConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
+    public func updateConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
         self.subject.snp.updateConstraints { make in
             closure(make)
         }
@@ -95,7 +69,7 @@ extension ZTWrapper where Subject: UIView {
     }
     
     @discardableResult
-    public func zt_removeConstraints() -> Self {
+    public func removeConstraints() -> Self {
         self.subject.snp.removeConstraints()
         return self
     }

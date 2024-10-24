@@ -19,7 +19,7 @@ func loginWidget() -> some UIView {
             ZTHStackWidget {
                 UILabel().zt.ref(&nameLbl).text("User:").textColor(.black).subject
                 ZTHSpacer(10)
-                UITextField().zt.ref(&usrTextField).placeholder("字母数字下划线").backgroundColor(.gray).textColor(.black).zt_makeConstraints { make in
+                UITextField().zt.ref(&usrTextField).placeholder("字母数字下划线").backgroundColor(.gray).textColor(.black).makeConstraints { make in
                     make.width.equalTo(200)
                     make.height.equalTo(100)
                 }.subject
@@ -66,19 +66,19 @@ func loginWidget2(_ bs:Bool) -> some UIView {
         }
         
         if bs {
-            UILabel().zt.ref(&nameLbl).text("User:").textColor(.black).zt_makeConstraints { make in
+            UILabel().zt.ref(&nameLbl).text("User:").textColor(.black).makeConstraints { make in
                 make.left.top.equalTo(10)
                 make.width.equalTo(80)
                 make.height.equalTo(20)
             }.subject
         } else {
-            UILabel().zt.ref(&nameLbl).text("PWD:").textColor(.black).zt_makeConstraints { make in
+            UILabel().zt.ref(&nameLbl).text("PWD:").textColor(.black).makeConstraints { make in
                 make.left.top.equalTo(10)
                 make.width.equalTo(80)
                 make.height.equalTo(20)
             }.subject
         }
-        UITextField().zt.ref(&usrTextField).placeholder("字母数字下划线").backgroundColor(.gray).textColor(.black).zt_makeConstraints { make in
+        UITextField().zt.ref(&usrTextField).placeholder("字母数字下划线").backgroundColor(.gray).textColor(.black).makeConstraints { make in
             make.left.equalTo(nameLbl!.snp.right).offset(10)
             make.top.equalTo(nameLbl!)
             make.width.equalTo(200)
@@ -93,13 +93,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let stack = loginWidget().zt.addTo(self.view).backgroundColor(.purple).zt_makeConstraints { make in
+        let stack = loginWidget().zt.addTo(self.view).backgroundColor(.purple).makeConstraints { make in
             make.width.equalTo(300)
             make.center.equalTo(self.view)
         }.subject
         stack.render()
         
-        loginWidget2(true).zt.addTo(self.view).zt_makeConstraints { make in
+        loginWidget2(true).zt.addTo(self.view).makeConstraints { make in
             make.width.equalTo(300)
             make.height.equalTo(40)
             make.centerX.equalToSuperview()
