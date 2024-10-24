@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ZTUIKit'
-  s.version          = '0.3.1'
+  s.version          = '0.4.0'
   s.summary          = 'ZTUIKit is specifically designed for UIKit, providing a SwiftUI-like experience for building UI interfaces in UIKit.'
 
   s.description      = <<-DESC
