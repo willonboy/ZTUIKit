@@ -96,15 +96,14 @@ class ViewController: UIViewController {
         let stack = loginWidget().zt.addTo(self.view).backgroundColor(.purple).makeConstraints { make in
             make.width.equalTo(300)
             make.center.equalTo(self.view)
-        }.subject
-        stack.render()
+        }.render()
         
         loginWidget2(true).zt.addTo(self.view).makeConstraints { make in
             make.width.equalTo(300)
             make.height.equalTo(40)
             make.centerX.equalToSuperview()
             make.top.equalTo(stack.snp.bottom).offset(20)
-        }.build().render()
+        }.render()
     }
 }
 

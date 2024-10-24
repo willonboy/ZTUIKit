@@ -66,4 +66,11 @@ extension ZTWrapper where Subject: UIView {
         self.subject.snp.removeConstraints()
         return self
     }
+    
+    @discardableResult
+    public func render() -> Subject {
+        self.subject.render()
+        return self.subject
+    }
+
 }
