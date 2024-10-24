@@ -36,7 +36,7 @@ You can also use Swift Package Manager to integrate ZTUIKit into your Xcode proj
 
 ```swift
 dependencies: [
-.package(url: "https://github.com/your_username/ZTUIKit.git", from: "0.1.0")
+.package(url: "https://github.com/your_username/ZTUIKit.git", from: "0.3.0")
 ]
 ```
 
@@ -45,15 +45,16 @@ dependencies: [
 ```swift
 import ZTUIKit
 // Create a vertical stack view
-let stackView = ZTVStackWidget {
+ZTVStackWidget {
     UILabel().zt.text("First Name:").textColor(.black).subject
     UILabel().zt.text("Middle Name:").textColor(.blue).subject
     UILabel().zt.text("Last Name:").textColor(.black).subject
-}.zt.alignment(.leading)
-        .spacing(10)
-        .subject
-// Add the stack view to a parent view
-view.addSubview(stackView)
+}
+.zt
+.addTo(self.view)
+.alignment(.leading)
+.spacing(10)
+.build()
 ```
 
 ZTUIKit is specifically designed for UIKit, providing a SwiftUI-like experience for building UI interfaces in UIKit.

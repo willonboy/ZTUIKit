@@ -12,7 +12,7 @@
 
 
 import UIKit
-import Foundation
+import ZTChain
 
 @objc public protocol ZTWidgetBaseProtocol : AnyObject {
     var view: UIView { get }
@@ -32,14 +32,6 @@ extension UIView : ZTWidgetBaseProtocol {
     @objc func render()
 }
 
-extension ZTWidgetProtocol {
-    @discardableResult
-    public func ref(_ ref:inout Self?) -> Self {
-        ref = self
-        return self 
-    }
-}
-
 extension UIView : ZTWidgetProtocol {
     public func willBeAdded(){}
     public func didAdded(){}
@@ -50,10 +42,10 @@ extension UIView : ZTWidgetProtocol {
     }
 }
 
-extension UIView {
+extension ZTWrapper where Subject: UIView {
     @discardableResult
     public func addTo(_ superview:UIView) -> Self {
-        superview.addSubview(self)
+        superview.addSubview(self.subject)
         return self
     }
 }

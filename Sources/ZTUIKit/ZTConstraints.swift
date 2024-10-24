@@ -11,15 +11,15 @@
 //
 
 
-import Foundation
 import UIKit
+import ZTChain
 import SnapKit
 
 public typealias LayoutClosure = (ConstraintMaker) -> Void
 private var layoutClosuresKey: UInt8 = 0
 
 extension UIView {
-    private var layoutClosures: LayoutClosure? {
+    fileprivate var layoutClosures: LayoutClosure? {
         get {
             return objc_getAssociatedObject(self, &layoutClosuresKey) as? LayoutClosure
         }
@@ -29,7 +29,7 @@ extension UIView {
     }
 
     @discardableResult
-    public func zt_makeConstraints(_ closure: @escaping LayoutClosure) -> Self {
+    fileprivate func zt_makeConstraints(_ closure: @escaping LayoutClosure) -> Self {
         self.layoutClosures = closure
         return self
     }
@@ -65,6 +65,38 @@ extension UIView {
     @discardableResult
     public func zt_removeConstraints() -> Self {
         self.snp.removeConstraints()
+        return self
+    }
+}
+
+
+extension ZTWrapper where Subject: UIView {
+    
+    @discardableResult
+    public func zt_makeConstraints(_ closure: @escaping LayoutClosure) -> Self {
+        self.subject.layoutClosures = closure
+        return self
+    }
+    
+    @discardableResult
+    public func zt_remakeConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
+        self.subject.snp.remakeConstraints { make in
+            closure(make)
+        }
+        return self
+    }
+    
+    @discardableResult
+    public func zt_updateConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
+        self.subject.snp.updateConstraints { make in
+            closure(make)
+        }
+        return self
+    }
+    
+    @discardableResult
+    public func zt_removeConstraints() -> Self {
+        self.subject.snp.removeConstraints()
         return self
     }
 }

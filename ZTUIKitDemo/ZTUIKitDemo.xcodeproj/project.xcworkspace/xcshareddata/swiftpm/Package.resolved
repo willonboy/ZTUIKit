@@ -8,6 +8,24 @@
         "revision" : "2842e6e84e82eb9a8dac0100ca90d9444b0307f4",
         "version" : "5.7.1"
       }
+    },
+    {
+      "identity" : "ztchain",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/willonboy/ZTChain",
+      "state" : {
+        "revision" : "5d295f987c835f0e207ffcbc3e6ea0c76106c767",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "ztstyle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/willonboy/ZTStyle",
+      "state" : {
+        "revision" : "c2dc02bb278a439c0aa95eeb2ec6f0e8b29fc346",
+        "version" : "2.0.0"
+      }
     }
   ],
   "version" : 2

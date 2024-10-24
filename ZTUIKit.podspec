@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ZTUIKit'
-  s.version          = '0.2.0'
+  s.version          = '0.3.0'
   s.summary          = 'ZTUIKit is specifically designed for UIKit, providing a SwiftUI-like experience for building UI interfaces in UIKit.'
 
   s.description      = <<-DESC
@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
 
   s.swift_version = '5.1'
   
-  s.dependency 'ZTChain', '1.0.0'
-  s.dependency 'ZTStyle', '1.0.0'
-  s.dependency 'SnapKit', '5.6.0'
+  s.dependency 'ZTChain', '1.0.2'
+  s.dependency 'ZTStyle', '2.0.0'
+  s.dependency 'SnapKit', '5.7.1'
 end

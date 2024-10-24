@@ -14,12 +14,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        self.window = UIWindow(frame: UIScreen.main.bounds)
+        UIWindow(frame: UIScreen.main.bounds)
             .zt
+            .ref(&window)
             .backgroundColor(.white)
             .rootViewController(ViewController())
             .subject
-        self.window?.makeKeyAndVisible()
+            .makeKeyAndVisible()
         
         return true
     }
