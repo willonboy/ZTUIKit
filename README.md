@@ -36,7 +36,7 @@ You can also use Swift Package Manager to integrate ZTUIKit into your Xcode proj
 
 ```swift
 dependencies: [
-.package(url: "https://github.com/your_username/ZTUIKit.git", from: "0.3.0")
+.package(url: "https://github.com/willonboy/ZTUIKit.git", from: "0.3.0")
 ]
 ```
 
