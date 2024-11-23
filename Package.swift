@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
          .package(url: "https://github.com/willonboy/ZTChain", from: "1.0.4"),
          .package(url: "https://github.com/willonboy/ZTStyle", from: "2.0.0"),
-         .package(url: "https://github.com/SnapKit/SnapKit", from: "5.7.1"),
+         .package(url: "https://github.com/freshOS/Stevia", from: "5.1.4"),
     ],
     targets: [
         .target(

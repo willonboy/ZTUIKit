@@ -7,28 +7,42 @@
 
 import UIKit
 import SnapKit
+import ZTChain
 
+extension ZTWrapper where Subject: UIView {
+    @MainActor
+    @discardableResult
+    public func addTo(_ superview:UIView) -> Self {
+        superview.addSubview(subject)
+        return self
+    }
+}
+
+#if ZTUIKIT_SNAPKIT
+
+@MainActor
 func loginWidget() -> some UIView {
     var nameLbl: UILabel?
     var pwdLbl: UILabel?
     var usrTextField: UITextField?
     var pwdTextField: UITextField?
     
-    let stack = ZTVStackWidget {
+    let stack = ZTVStack {
         ZTWrapperWidget {
-            ZTHStackWidget {
-                UILabel().zt.ref(&nameLbl).text("User:").textColor(.black).subject
-                ZTHSpacer(10)
-                UITextField().zt.ref(&usrTextField).placeholder("字母数字下划线").backgroundColor(.gray).textColor(.black).makeConstraints { make in
+            ZTHStack {
+                UILabel("User:").zt.ref(&nameLbl).subject
+                ZTSpacer(10, axis: .h)
+                UITextField("字母数字下划线").zt.ref(&usrTextField).backgroundColor(.gray)
+                    .makeConstraints { make, _ in
                     make.width.equalTo(200)
                     make.height.equalTo(100)
                 }.subject
             }.zt.alignment(.leading).spacing(2).subject
             
-            ZTHStackWidget {
-                UILabel().zt.ref(&pwdLbl).text("Pwd:").textColor(.black).subject
-                ZTHSpacer(13)
-                UITextField().zt.ref(&pwdTextField).placeholder("字母数字符号组合").backgroundColor(.gray).textColor(.black).subject
+            ZTHStack {
+                UILabel("Pwd:").zt.ref(&pwdLbl).subject
+                ZTSpacer(13, axis: .h)
+                UITextField("字母数字符号组合").zt.ref(&pwdTextField).backgroundColor(.gray).subject
             }.zt.alignment(.leading).spacing(2).subject
         }
     }.zt.alignment(.leading)
@@ -42,68 +56,85 @@ func loginWidget() -> some UIView {
 }
 
 
+@MainActor
 func loginWidget2(_ bs:Bool) -> some UIView {
     var nameLbl: UILabel?
     var usrTextField: UITextField?
     
-    let container = ZTContainerWidget {
-        if bs {
-            ZTWrapperWidget {
-                UILabel().zt.ref(&nameLbl).text("tips:").textColor(.black).subject
-                UILabel().zt.ref(&nameLbl).text("tips:").textColor(.black).subject
-                UILabel().zt.ref(&nameLbl).text("tips:").textColor(.black).subject
-            }
-        }
-        if #available(iOS 17, *) {
-            UILabel().zt.ref(&nameLbl).text("tips:").textColor(.black).subject
-            UILabel().zt.ref(&nameLbl).text("tips:").textColor(.black).subject
-            UILabel().zt.ref(&nameLbl).text("tips:").textColor(.black).subject
-            UILabel().zt.ref(&nameLbl).text("tips:").textColor(.black).subject
-        } else {
-            for _ in 0..<10 {
-                UILabel().zt.ref(&nameLbl).text("tips:").textColor(.black).subject
-            }
-        }
+    let container = UIView {
         
         if bs {
-            UILabel().zt.ref(&nameLbl).text("User:").textColor(.black).makeConstraints { make in
+            UILabel("User:").zt.ref(&nameLbl).makeConstraints { make, _ in
                 make.left.top.equalTo(10)
                 make.width.equalTo(80)
                 make.height.equalTo(20)
             }.subject
         } else {
-            UILabel().zt.ref(&nameLbl).text("PWD:").textColor(.black).makeConstraints { make in
+            UILabel("PWD:").zt.ref(&nameLbl).makeConstraints { make, _ in
                 make.left.top.equalTo(10)
                 make.width.equalTo(80)
                 make.height.equalTo(20)
             }.subject
         }
-        UITextField().zt.ref(&usrTextField).placeholder("字母数字下划线").backgroundColor(.gray).textColor(.black).makeConstraints { make in
+        UITextField("字母数字下划线").zt.ref(&usrTextField).backgroundColor(.gray).makeConstraints { make, _ in
             make.left.equalTo(nameLbl!.snp.right).offset(10)
             make.top.equalTo(nameLbl!)
             make.width.equalTo(200)
             make.height.equalTo(20)
         }.subject
+        
+        ZTVStack {
+            ZTSpacer(50)
+            if bs {
+                ZTVStack {
+                    UILabel("if :")
+                    ZTSpacer(10)
+                    UILabel("ZTWrapperWidget:")
+                    ZTSpacer(10)
+                    UILabel("tips:")
+                }
+            }
+            ZTSpacer(10)
+            if #available(iOS 17, *) {
+                ZTVStack {
+                    UILabel("if #available")
+                    ZTSpacer(10)
+                    UILabel("if #available")
+                    ZTSpacer(10)
+                    UILabel("if #available").zt.textColor(.red).build()
+                }
+            } else {
+                for _ in 0..<10 {
+                    ZTWrapperWidget {
+                        ZTSpacer(10)
+                        UILabel("for in")
+                    }
+                }
+            }
+        }
     }
     return container
 }
+#endif
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let stack = loginWidget().zt.addTo(self.view).backgroundColor(.purple).makeConstraints { make in
+        #if ZTUIKIT_SNAPKIT
+        let stack = loginWidget().zt.addTo(self.view).backgroundColor(.purple).makeConstraints { make, _ in
             make.width.equalTo(300)
             make.center.equalTo(self.view)
         }.render()
         
-        loginWidget2(true).zt.addTo(self.view).makeConstraints { make in
+        loginWidget2(true).zt.addTo(self.view).makeConstraints { make, _ in
             make.width.equalTo(300)
             make.height.equalTo(40)
             make.centerX.equalToSuperview()
             make.top.equalTo(stack.snp.bottom).offset(20)
         }.render()
+        #endif
     }
 }
 

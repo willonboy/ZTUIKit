@@ -7,27 +7,41 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7B4465102CEF1141003DDF76 /* Stevia in Frameworks */ = {isa = PBXBuildFile; productRef = 7B44650F2CEF1141003DDF76 /* Stevia */; };
+		7B4465122CEF1171003DDF76 /* ZTConstraints+Stevia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4465112CEF1165003DDF76 /* ZTConstraints+Stevia.swift */; };
+		7B4465142CEF3253003DDF76 /* SteviaVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4465132CEF324B003DDF76 /* SteviaVC.swift */; };
+		7B4465172CF06160003DDF76 /* UIImageView+ZT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4465162CF06158003DDF76 /* UIImageView+ZT.swift */; };
+		7BF9FBE42CEC656C00688056 /* UIButton+ZT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF9FBE32CEC655700688056 /* UIButton+ZT.swift */; };
+		7BF9FBE62CEC659400688056 /* UIView+ZT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF9FBE52CEC658D00688056 /* UIView+ZT.swift */; };
+		7BF9FBE82CEC65B800688056 /* UILabel+ZT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF9FBE72CEC65B000688056 /* UILabel+ZT.swift */; };
+		7BF9FBEA2CEC665600688056 /* UITextField+ZT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF9FBE92CEC664A00688056 /* UITextField+ZT.swift */; };
 		971D903E2C0F693000EE3A49 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D903D2C0F693000EE3A49 /* AppDelegate.swift */; };
 		971D90422C0F693000EE3A49 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D90412C0F693000EE3A49 /* ViewController.swift */; };
 		971D90472C0F693200EE3A49 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 971D90462C0F693200EE3A49 /* Assets.xcassets */; };
 		971D904A2C0F693200EE3A49 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 971D90482C0F693200EE3A49 /* LaunchScreen.storyboard */; };
-		971D905A2C0F69BF00EE3A49 /* ZTConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D90562C0F69BF00EE3A49 /* ZTConstraints.swift */; };
+		971D905A2C0F69BF00EE3A49 /* ZTConstraints+Snapkit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D90562C0F69BF00EE3A49 /* ZTConstraints+Snapkit.swift */; };
 		971D905B2C0F69BF00EE3A49 /* ZTWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D90572C0F69BF00EE3A49 /* ZTWidget.swift */; };
 		971D905C2C0F69BF00EE3A49 /* ZTUIKit.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 971D90582C0F69BF00EE3A49 /* ZTUIKit.podspec */; };
 		971D905F2C0F6C0300EE3A49 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 971D905E2C0F6C0300EE3A49 /* SnapKit */; };
 		971D90642C0F6C2600EE3A49 /* ZTChain in Frameworks */ = {isa = PBXBuildFile; productRef = 971D90632C0F6C2600EE3A49 /* ZTChain */; };
 		976BF0A92CCA6BED004F7D55 /* ZTChain in Frameworks */ = {isa = PBXBuildFile; productRef = 976BF0A82CCA6BED004F7D55 /* ZTChain */; };
-		976BF0AC2CCA6C06004F7D55 /* ZTStyle in Frameworks */ = {isa = PBXBuildFile; productRef = 976BF0AB2CCA6C06004F7D55 /* ZTStyle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7B4465112CEF1165003DDF76 /* ZTConstraints+Stevia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ZTConstraints+Stevia.swift"; sourceTree = "<group>"; };
+		7B4465132CEF324B003DDF76 /* SteviaVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteviaVC.swift; sourceTree = "<group>"; };
+		7B4465162CF06158003DDF76 /* UIImageView+ZT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+ZT.swift"; sourceTree = "<group>"; };
+		7BF9FBE32CEC655700688056 /* UIButton+ZT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+ZT.swift"; sourceTree = "<group>"; };
+		7BF9FBE52CEC658D00688056 /* UIView+ZT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+ZT.swift"; sourceTree = "<group>"; };
+		7BF9FBE72CEC65B000688056 /* UILabel+ZT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+ZT.swift"; sourceTree = "<group>"; };
+		7BF9FBE92CEC664A00688056 /* UITextField+ZT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+ZT.swift"; sourceTree = "<group>"; };
 		971D903A2C0F693000EE3A49 /* ZTUIKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZTUIKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		971D903D2C0F693000EE3A49 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		971D90412C0F693000EE3A49 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		971D90462C0F693200EE3A49 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		971D90492C0F693200EE3A49 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		971D904B2C0F693200EE3A49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		971D90562C0F69BF00EE3A49 /* ZTConstraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZTConstraints.swift; sourceTree = "<group>"; };
+		971D90562C0F69BF00EE3A49 /* ZTConstraints+Snapkit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ZTConstraints+Snapkit.swift"; sourceTree = "<group>"; };
 		971D90572C0F69BF00EE3A49 /* ZTWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZTWidget.swift; sourceTree = "<group>"; };
 		971D90582C0F69BF00EE3A49 /* ZTUIKit.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ZTUIKit.podspec; path = ../ZTUIKit.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -37,9 +51,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B4465102CEF1141003DDF76 /* Stevia in Frameworks */,
 				976BF0A92CCA6BED004F7D55 /* ZTChain in Frameworks */,
 				971D90642C0F6C2600EE3A49 /* ZTChain in Frameworks */,
-				976BF0AC2CCA6C06004F7D55 /* ZTStyle in Frameworks */,
 				971D905F2C0F6C0300EE3A49 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -70,6 +84,12 @@
 			children = (
 				971D903D2C0F693000EE3A49 /* AppDelegate.swift */,
 				971D90412C0F693000EE3A49 /* ViewController.swift */,
+				7B4465132CEF324B003DDF76 /* SteviaVC.swift */,
+				7BF9FBE32CEC655700688056 /* UIButton+ZT.swift */,
+				7BF9FBE52CEC658D00688056 /* UIView+ZT.swift */,
+				7BF9FBE72CEC65B000688056 /* UILabel+ZT.swift */,
+				7BF9FBE92CEC664A00688056 /* UITextField+ZT.swift */,
+				7B4465162CF06158003DDF76 /* UIImageView+ZT.swift */,
 				971D90462C0F693200EE3A49 /* Assets.xcassets */,
 				971D90482C0F693200EE3A49 /* LaunchScreen.storyboard */,
 				971D904B2C0F693200EE3A49 /* Info.plist */,
@@ -89,7 +109,8 @@
 		971D90552C0F69BF00EE3A49 /* ZTUIKit */ = {
 			isa = PBXGroup;
 			children = (
-				971D90562C0F69BF00EE3A49 /* ZTConstraints.swift */,
+				971D90562C0F69BF00EE3A49 /* ZTConstraints+Snapkit.swift */,
+				7B4465112CEF1165003DDF76 /* ZTConstraints+Stevia.swift */,
 				971D90572C0F69BF00EE3A49 /* ZTWidget.swift */,
 			);
 			path = ZTUIKit;
@@ -115,7 +136,7 @@
 				971D905E2C0F6C0300EE3A49 /* SnapKit */,
 				971D90632C0F6C2600EE3A49 /* ZTChain */,
 				976BF0A82CCA6BED004F7D55 /* ZTChain */,
-				976BF0AB2CCA6C06004F7D55 /* ZTStyle */,
+				7B44650F2CEF1141003DDF76 /* Stevia */,
 			);
 			productName = ZTUIKitDemo;
 			productReference = 971D903A2C0F693000EE3A49 /* ZTUIKitDemo.app */;
@@ -148,7 +169,7 @@
 			packageReferences = (
 				971D905D2C0F6C0300EE3A49 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				976BF0A72CCA6BED004F7D55 /* XCRemoteSwiftPackageReference "ZTChain" */,
-				976BF0AA2CCA6C06004F7D55 /* XCRemoteSwiftPackageReference "ZTStyle" */,
+				7B44650E2CEF1141003DDF76 /* XCRemoteSwiftPackageReference "Stevia" */,
 			);
 			productRefGroup = 971D903B2C0F693000EE3A49 /* Products */;
 			projectDirPath = "";
@@ -177,9 +198,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B4465172CF06160003DDF76 /* UIImageView+ZT.swift in Sources */,
+				7BF9FBE62CEC659400688056 /* UIView+ZT.swift in Sources */,
+				7BF9FBE82CEC65B800688056 /* UILabel+ZT.swift in Sources */,
+				7BF9FBE42CEC656C00688056 /* UIButton+ZT.swift in Sources */,
+				7BF9FBEA2CEC665600688056 /* UITextField+ZT.swift in Sources */,
 				971D905B2C0F69BF00EE3A49 /* ZTWidget.swift in Sources */,
 				971D90422C0F693000EE3A49 /* ViewController.swift in Sources */,
-				971D905A2C0F69BF00EE3A49 /* ZTConstraints.swift in Sources */,
+				7B4465142CEF3253003DDF76 /* SteviaVC.swift in Sources */,
+				971D905A2C0F69BF00EE3A49 /* ZTConstraints+Snapkit.swift in Sources */,
+				7B4465122CEF1171003DDF76 /* ZTConstraints+Stevia.swift in Sources */,
 				971D903E2C0F693000EE3A49 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -322,8 +350,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ZTUIKitDemo/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -336,8 +365,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.trojanzhang.ZTUIKitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -349,8 +380,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ZTUIKitDemo/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -365,6 +397,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.trojanzhang.ZTUIKitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -395,6 +428,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7B44650E2CEF1141003DDF76 /* XCRemoteSwiftPackageReference "Stevia" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/freshOS/Stevia";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 		971D905D2C0F6C0300EE3A49 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -411,17 +452,14 @@
 				minimumVersion = 1.0.4;
 			};
 		};
-		976BF0AA2CCA6C06004F7D55 /* XCRemoteSwiftPackageReference "ZTStyle" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/willonboy/ZTStyle";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7B44650F2CEF1141003DDF76 /* Stevia */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7B44650E2CEF1141003DDF76 /* XCRemoteSwiftPackageReference "Stevia" */;
+			productName = Stevia;
+		};
 		971D905E2C0F6C0300EE3A49 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 971D905D2C0F6C0300EE3A49 /* XCRemoteSwiftPackageReference "SnapKit" */;
@@ -435,11 +473,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 976BF0A72CCA6BED004F7D55 /* XCRemoteSwiftPackageReference "ZTChain" */;
 			productName = ZTChain;
-		};
-		976BF0AB2CCA6C06004F7D55 /* ZTStyle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 976BF0AA2CCA6C06004F7D55 /* XCRemoteSwiftPackageReference "ZTStyle" */;
-			productName = ZTStyle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

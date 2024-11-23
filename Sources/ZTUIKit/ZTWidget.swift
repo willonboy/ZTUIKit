@@ -12,145 +12,57 @@
 
 
 import UIKit
-import ZTChain
 
+@MainActor
 @objc public protocol ZTWidgetBaseProtocol : AnyObject {
     var view: UIView { get }
 }
-
 extension UIView : ZTWidgetBaseProtocol {
     public var view: UIView {
         self
     }
 }
 
-@objc public protocol ZTWidgetProtocol where Self : ZTWidgetBaseProtocol {
-    @objc func willBeAdded()
-    @objc func didAdded()
-    @objc func willBeRemoved()
-    @objc func didRemoved()
-    @objc func render()
-}
-
-extension UIView : ZTWidgetProtocol {
-    public func willBeAdded(){}
-    public func didAdded(){}
-    public func willBeRemoved(){}
-    public func didRemoved(){}
-    public func render() {
-        self.executeLayoutClosures()
+@MainActor
+public extension UIView {
+    private static var zt_subWidgetsKey: UInt8 = 0
+    fileprivate var subWidgets: [any ZTWidgetProtocol] {
+        get {
+            assert(Thread.isMainThread)
+            if let arr = objc_getAssociatedObject(self, &Self.zt_subWidgetsKey) as? [any ZTWidgetProtocol] {
+                return arr
+            }
+            let arr:[any ZTWidgetProtocol] = []
+            objc_setAssociatedObject(self, &Self.zt_subWidgetsKey, arr, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return arr
+        }
+        set {
+            assert(Thread.isMainThread)
+            objc_setAssociatedObject(self, &Self.zt_subWidgetsKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
     }
-}
-
-extension ZTWrapper where Subject: UIView {
-    @discardableResult
-    public func addTo(_ superview:UIView) -> Self {
-        superview.addSubview(self.subject)
+    
+    public convenience init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
+        self.init(widgets())
+    }
+    
+    public convenience init(_ ws: [any ZTWidgetProtocol]) {
+        self.init(frame: .zero)
+        add(ws)
+    }
+    
+    public func add(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) -> Self {
+        let subWidgets = widgets()
+        add(subWidgets)
         return self
     }
-}
-
-/// Like React JSX <React.Fragment>
-public class ZTWrapperWidget : UIView {
-    open var subWidgets: [any ZTWidgetProtocol] = []
-    public required init(_ widgets: [any ZTWidgetProtocol]) {
-        self.subWidgets = widgets
-        super.init(frame: .zero)
-    }
     
-    public required init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
-        self.subWidgets = widgets()
-        super.init(frame: .zero)
-    }
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-#if compiler(>=5.4)
-@resultBuilder
-#else
-@_functionBuilder
-#endif
-public struct ZTWidgetBuilder {
-    
-    public static func buildBlock(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
-        widget
-    }
-    
-    public static func buildBlock(_ widgets: any ZTWidgetProtocol...) -> [any ZTWidgetProtocol] {
-        widgets
-    }
-    
-#if compiler(>=5.4)
-    // Support for conditional blocks (if statements without else)
-    static func buildOptional(_ widget: (any ZTWidgetProtocol)?) -> any ZTWidgetProtocol {
-        guard widget != nil else {return ZTWrapperWidget([])}
-        return widget!
-    }
-    
-#else
-    // Support for conditional blocks (if statements without else)
-    static func buildIf(_ widget: (any ZTWidgetProtocol)?) -> any ZTWidgetProtocol {
-        guard widget != nil else {return ZTWrapperWidget([])}
-        return widget!
-    }
-#endif
-
-    // Support for conditional blocks (if-else statements)
-    static func buildEither(first widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
-        widget
-    }
-
-    static func buildEither(second widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
-        widget
-    }
-
-    // Support for loops (for-in statements)
-    static func buildArray(_ widgets: [any ZTWidgetProtocol]) -> any ZTWidgetProtocol {
-        ZTWrapperWidget(widgets)
-    }
-
-    // Support for limited availability (e.g., #available)
-    static func buildLimitedAvailability(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
-        widget
-    }
-
-    // Support for limited availability (e.g., #available)
-    static func buildLimitedAvailability(_ widgets: [any ZTWidgetProtocol]) -> any ZTWidgetProtocol {
-        ZTWrapperWidget(widgets)
-    }
-
-    // Support for final result transformation
-    static func buildFinalResult(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
-        widget
-    }
-    
-    // Support for final result transformation
-    static func buildFinalResult(_ widgets: [any ZTWidgetProtocol]) -> [any ZTWidgetProtocol] {
-        widgets
-    }
-}
-
-public protocol ZTContainerWidgetProtocol : ZTWidgetProtocol {
-    var subWidgets: [any ZTWidgetProtocol] { get set }
-    init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol])
-    func buildSubWidgets(_ widgets:[any ZTWidgetProtocol]) -> Void
-    func addWidgets(_ widgets:[any ZTWidgetProtocol]) -> Void
-    func removeWidgets(_ widgets:[any ZTWidgetProtocol]) -> Void
-}
-
-extension ZTContainerWidgetProtocol where Self : UIView {
-    public func addWidgets(_ widgets: [any ZTWidgetProtocol]) {
+    public func add(_ widgets:[any ZTWidgetProtocol]) {
         for widget in widgets {
             if let wrapperWidget = widget as? ZTWrapperWidget {
-                addWidgets(wrapperWidget.subWidgets)
+                add(wrapperWidget.subWidgets)
             } else {
-                widget.willBeAdded()
                 subWidgets.append(widget)
-                self.addSubview(widget.view)
-                widget.didAdded()
-                _ = widget.render()
             }
         }
     }
@@ -163,119 +75,250 @@ extension ZTContainerWidgetProtocol where Self : UIView {
             subWidgets.removeAll { $0 === widget }
         }
     }
-    
-    public func buildSubWidgets(_ widgets: [any ZTWidgetProtocol]) {
-        for widget in widgets {
-            if let wrapperWidget = widget as? ZTWrapperWidget {
-                buildSubWidgets(wrapperWidget.subWidgets)
+}
+
+@MainActor
+@objc public protocol ZTWidgetProtocol where Self : ZTWidgetBaseProtocol {
+    @objc func willBeAdded()
+    @objc func didAdded()
+    @objc func willBeRemoved()
+    @objc func didRemoved()
+    @objc func render()
+}
+
+public extension ZTWidgetProtocol {
+    @MainActor
+    func bindConstraints() {}
+}
+
+extension UIView : ZTWidgetProtocol {
+    public func willBeAdded(){}
+    public func didAdded(){}
+    public func willBeRemoved(){}
+    public func didRemoved(){}
+    public func render() {
+        translatesAutoresizingMaskIntoConstraints = false
+        bindConstraints()
+        for widget in subWidgets {
+            widget.willBeAdded()
+            if let stack = self as? UIStackView {
+                stack.addArrangedSubview(widget.view)
             } else {
-                subWidgets.append(widget)
+                addSubview(widget.view)
+            }
+            widget.didAdded()
+            widget.render()
+        }
+    }
+}
+
+extension UIView {
+    private static var zt_domIdKey: UInt8 = 0
+    
+    @MainActor
+    func zt_find(_ domId:String) -> UIView? {
+        // Only query one level down.
+        if let weakBox = self.domIdMap[domId], let v = weakBox.value {
+            return v
+        }
+        if let v = subviews.first(where: { $0.domId == domId }) {
+            return v
+        }
+#if DEBUG
+        assert(superview != nil)
+#endif
+        assert(Thread.isMainThread)
+        // Only query the views of the immediate ancestral-level relationships upwards.
+        var s = superview
+        repeat {
+            if let weakBox = s?.domIdMap[domId], let v = weakBox.value {
+                return v
+            }
+            if let v = s?.subviews.first(where: { $0.domId == domId }) {
+                return v
+            }
+            s = s?.superview
+        } while (s != nil)
+        return nil
+    }
+    
+    @MainActor
+    public var domId: String? {
+        get {
+            guard let id = objc_getAssociatedObject(self, &Self.zt_domIdKey) as? String else {
+                return nil
+            }
+            if superview?.domIdMap[id] == nil {
+                superview?.domIdMap[id] = ZTWeakBox(value: self)
+            } else if let v = superview?.domIdMap[id], v.value == nil {
+                superview?.domIdMap[id] = ZTWeakBox(value: self)
+            }
+            return id
+        }
+        set {
+            let oldValue = objc_getAssociatedObject(self, &Self.zt_domIdKey) as? String
+            if let oldId = oldValue, oldId != newValue {
+                superview?.domIdMap.removeValue(forKey: oldId)
+            }
+            
+            objc_setAssociatedObject(self, &Self.zt_domIdKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            if let id = newValue, superview?.domIdMap[id] == nil {
+                superview?.domIdMap[id] = ZTWeakBox(value: self)
             }
         }
     }
 }
 
-open class ZTContainerWidget : UIView, ZTContainerWidgetProtocol {
-    open var subWidgets: [any ZTWidgetProtocol] = []
+extension UIView {
+    private static var zt_domIdMapKey: UInt8 = 0
     
-    public required init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
-        super.init(frame: .zero)
-        self.buildSubWidgets(widgets())
-    }
-    
-    public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    open override func render() {
-        for widget in subWidgets {
-            widget.willBeAdded()
-            self.addSubview(widget.view)
-            widget.didAdded()
-            _ = widget.render()
-        }
-        self.executeLayoutClosures()
-    }
-}
-
-open class ZTScrollViewWidget: UIScrollView, ZTContainerWidgetProtocol {
-    open var subWidgets: [any ZTWidgetProtocol] = []
-    
-    public required init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
-        super.init(frame: .zero)
-        self.buildSubWidgets(widgets())
-    }
-    
-    public required init(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    open override func render() {
-        for widget in subWidgets {
-            widget.willBeAdded()
-            self.addSubview(widget.view)
-            widget.didAdded()
-            _ = widget.render()
-        }
-        self.executeLayoutClosures()
-    }
-}
-
-open class ZTHStackWidget: UIStackView, ZTContainerWidgetProtocol {
-    open var subWidgets: [any ZTWidgetProtocol] = []
-    
-    public required init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
-        super.init(frame: .zero)
-        self.buildSubWidgets(widgets())
+    fileprivate class ZTWeakBox<T: AnyObject> {
+        weak private(set) var value: T?
         
-        self.axis = .horizontal
+        init(value: T?) {
+            self.value = value
+        }
+    }
+    
+    @MainActor
+    fileprivate var domIdMap: [String : ZTWeakBox<UIView>] {
+        get {
+            assert(Thread.isMainThread)
+            if let map = objc_getAssociatedObject(self, &Self.zt_domIdMapKey) as? [String : ZTWeakBox<UIView>] {
+                return map
+            }
+            let map:[String : ZTWeakBox<UIView>] = [:]
+            objc_setAssociatedObject(self, &Self.zt_domIdMapKey, map, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return map
+        }
+        set {
+            assert(Thread.isMainThread)
+            objc_setAssociatedObject(self, &Self.zt_domIdMapKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+}
+
+#if compiler(>=5.4)
+@resultBuilder
+#else
+@_functionBuilder
+#endif
+@MainActor
+public struct ZTWidgetBuilder {
+    
+    public static func buildBlock(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
+        widget
+    }
+    
+    public static func buildBlock(_ widgets: any ZTWidgetProtocol...) -> [any ZTWidgetProtocol] {
+        widgets
+    }
+    
+#if compiler(>=5.4)
+    // Support for conditional blocks (if statements without else)
+    public static func buildOptional(_ widget: (any ZTWidgetProtocol)?) -> any ZTWidgetProtocol {
+        guard widget != nil else { return ZTWrapperWidget([]) }
+        return widget!
+    }
+    
+#else
+    // Support for conditional blocks (if statements without else)
+    public static func buildIf(_ widget: (any ZTWidgetProtocol)?) -> any ZTWidgetProtocol {
+        guard widget != nil else {return ZTWrapperWidget([])}
+        return widget!
+    }
+#endif
+
+    // Support for conditional blocks (if-else statements)
+    public static func buildEither(first widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
+        widget
+    }
+
+    public static func buildEither(second widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
+        widget
+    }
+
+    // Support for loops (for-in statements)
+    public static func buildArray(_ widgets: [any ZTWidgetProtocol]) -> any ZTWidgetProtocol {
+        ZTWrapperWidget(widgets)
+    }
+
+    // Support for limited availability (e.g., #available)
+    public static func buildLimitedAvailability(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
+        widget
+    }
+
+    // Support for limited availability (e.g., #available)
+    public static func buildLimitedAvailability(_ widgets: [any ZTWidgetProtocol]) -> any ZTWidgetProtocol {
+        ZTWrapperWidget(widgets)
+    }
+
+    // Support for final result transformation
+    public static func buildFinalResult(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
+        widget
+    }
+    
+    // Support for final result transformation
+    public static func buildFinalResult(_ widgets: [any ZTWidgetProtocol]) -> [any ZTWidgetProtocol] {
+        widgets
+    }
+}
+
+/// Like React JSX <React.Fragment>
+@MainActor
+public class ZTWrapperWidget : UIView {}
+
+@MainActor
+open class ZTHStack: UIStackView {
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        axis = .horizontal
     }
     
     public required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    open override func render() {
-        for widget in subWidgets {
-            widget.willBeAdded()
-            self.addArrangedSubview(widget.view)
-            widget.didAdded()
-            _ = widget.render()
-        }
-        self.executeLayoutClosures()
-    }
 }
 
-open class ZTVStackWidget: UIStackView, ZTContainerWidgetProtocol {
-    open var subWidgets: [any ZTWidgetProtocol] = []
-    
-    public required init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
-        super.init(frame: .zero)
-        self.buildSubWidgets(widgets())
-        
-        self.axis = .vertical
+@MainActor
+open class ZTVStack: UIStackView {
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        axis = .vertical
     }
     
     public required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    open override func render() {
-        for widget in subWidgets {
-            widget.willBeAdded()
-            self.addArrangedSubview(widget.view)
-            widget.didAdded()
-            _ = widget.render()
-        }
-        self.executeLayoutClosures()
-    }
 }
 
-public class ZTHSpacer : UIView {
-    public init(_ spacing:CGFloat) {
-        super.init(frame:.zero)
-        self.translatesAutoresizingMaskIntoConstraints = false
-        self.widthAnchor.constraint(equalToConstant: spacing).isActive = true
+@MainActor
+public class ZTSpacer : UIView {
+    public enum Axis {
+        case h, v
+    }
+    
+    public init(_ spacing:CGFloat = 0, axis:Axis = .v) {
+        if case .h = axis {
+            if abs(spacing) < 0.001 {
+                super.init(frame: .zero)
+                setContentHuggingPriority(.defaultLow, for: .horizontal)
+                setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+            } else {
+                super.init(frame:CGRectMake(0, 0, spacing, 1))
+                widthAnchor.constraint(equalToConstant: spacing).isActive = true
+            }
+        } else {
+            if abs(spacing) < 0.001 {
+                super.init(frame: .zero)
+                setContentHuggingPriority(.defaultLow, for: .vertical)
+                setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+            } else {
+                super.init(frame:CGRectMake(0, 0, 1, spacing))
+                heightAnchor.constraint(equalToConstant: spacing).isActive = true
+            }
+        }
+        translatesAutoresizingMaskIntoConstraints = false
     }
     
     required init?(coder: NSCoder) {
@@ -283,15 +326,30 @@ public class ZTHSpacer : UIView {
     }
 }
 
-public class ZTVSpacer : UIView {
-    public init(_ spacing:CGFloat) {
-        super.init(frame:.zero)
-        self.translatesAutoresizingMaskIntoConstraints = false
-        self.heightAnchor.constraint(equalToConstant: spacing).isActive = true
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
+// TODO Features to be developed
+//extension UIView {
+//    private struct AssociatedKeys {
+//        static var superviewObserver: Void?
+//    }
+//    
+//    // 当superview变化时，我们会通过KVO通知
+//    fileprivate func startObservingSuperview() {
+//        addObserver(self, forKeyPath: #keyPath(superview), options: [.new, .old], context: nil)
+//    }
+//    
+//    // 重写KVO方法
+//    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+//        if keyPath == #keyPath(superview) {
+//            // 当superview变化时的处理逻辑
+//            if let oldSuperview = change?[.oldKey] as? UIView, let newSuperview = change?[.newKey] as? UIView {
+//                print("Superview changed from \(oldSuperview) to \(newSuperview)")
+//            }
+//        }
+//    }
+//    
+//    // 停止观察
+//    fileprivate func stopObservingSuperview() {
+//        removeObserver(self, forKeyPath: #keyPath(superview))
+//    }
+//    
+//}

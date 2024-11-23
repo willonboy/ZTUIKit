@@ -1,0 +1,34 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Stevia",
+        "repositoryURL": "https://github.com/freshOS/Stevia",
+        "state": {
+          "branch": null,
+          "revision": "090ffddd48f2f64f5c17a74f0cc61fe9387d71a5",
+          "version": "5.1.4"
+        }
+      },
+      {
+        "package": "ZTChain",
+        "repositoryURL": "https://github.com/willonboy/ZTChain",
+        "state": {
+          "branch": null,
+          "revision": "5d295f987c835f0e207ffcbc3e6ea0c76106c767",
+          "version": "1.0.4"
+        }
+      },
+      {
+        "package": "ZTStyle",
+        "repositoryURL": "https://github.com/willonboy/ZTStyle",
+        "state": {
+          "branch": null,
+          "revision": "c2dc02bb278a439c0aa95eeb2ec6f0e8b29fc346",
+          "version": "2.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

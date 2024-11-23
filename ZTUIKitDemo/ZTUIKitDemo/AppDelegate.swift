@@ -14,13 +14,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        UIWindow(frame: UIScreen.main.bounds)
-            .zt
+        UIWindow(frame: UIScreen.main.bounds).zt
             .ref(&window)
             .backgroundColor(.white)
-            .rootViewController(ViewController())
-            .subject
-            .makeKeyAndVisible()
+            .rootViewController(SteviaVC())
+//            .rootViewController(ViewController())
+            .call {
+                $0.makeKeyAndVisible()
+            }
+            .build()
         
         return true
     }
