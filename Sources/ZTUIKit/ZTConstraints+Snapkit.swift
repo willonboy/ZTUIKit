@@ -19,7 +19,7 @@ import SnapKit
 
 public typealias ZTUIKitSnapkitLayoutClosure = (_ make: ConstraintMaker, _ dom: (String) -> UIView?) -> Void
 
-extension UIView {
+public extension UIView {
     private static var zt_layoutClosuresKey: UInt8 = 0
     
     @MainActor
@@ -33,7 +33,7 @@ extension UIView {
     }
     
     @MainActor
-    public func bindConstraints() {
+    func bindConstraints() {
         if let closures = self.layoutClosures {
             assert(superview != nil)
             self.snp.makeConstraints { make in
@@ -45,17 +45,17 @@ extension UIView {
 }
 
 
-extension ZTWrapper where Subject: UIView {
+public extension ZTWrapper where Subject: UIView {
     @MainActor
     @discardableResult
-    public func makeConstraints(_ closure: @escaping ZTUIKitSnapkitLayoutClosure) -> Self {
+    func makeConstraints(_ closure: @escaping ZTUIKitSnapkitLayoutClosure) -> Self {
         self.subject.layoutClosures = closure
         return self
     }
     
     @MainActor
     @discardableResult
-    public func remakeConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
+    func remakeConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
         self.subject.snp.remakeConstraints { make in
             closure(make)
         }
@@ -64,7 +64,7 @@ extension ZTWrapper where Subject: UIView {
     
     @MainActor
     @discardableResult
-    public func updateConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
+    func updateConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
         self.subject.snp.updateConstraints { make in
             closure(make)
         }
@@ -73,14 +73,14 @@ extension ZTWrapper where Subject: UIView {
     
     @MainActor
     @discardableResult
-    public func removeConstraints() -> Self {
+    func removeConstraints() -> Self {
         self.subject.snp.removeConstraints()
         return self
     }
     
     @MainActor
     @discardableResult
-    public func render() -> Subject {
+    func render() -> Subject {
         self.subject.render()
         return self.subject
     }

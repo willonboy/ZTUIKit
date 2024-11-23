@@ -20,7 +20,7 @@ import Stevia
 
 public typealias ZTUIKitSteviaLayoutClosure = (_ v: UIView, _ dom: (String) -> UIView?) -> Void
 
-extension UIView {
+public extension UIView {
     private static var zt_layoutClosuresKey: UInt8 = 0
     
     @MainActor
@@ -34,7 +34,7 @@ extension UIView {
     }
     
     @MainActor
-    public func bindConstraints() {
+    func bindConstraints() {
         if let closures = self.layoutClosures {
             assert(superview != nil)
             closures(self, self.zt_find)
@@ -44,17 +44,17 @@ extension UIView {
 }
 
 
-extension ZTWrapper where Subject: UIView {
+public extension ZTWrapper where Subject: UIView {
     @MainActor
     @discardableResult
-    public func makeConstraints(_ closure: @escaping ZTUIKitSteviaLayoutClosure) -> Self {
+    func makeConstraints(_ closure: @escaping ZTUIKitSteviaLayoutClosure) -> Self {
         self.subject.layoutClosures = closure
         return self
     }
     
     @MainActor
     @discardableResult
-    public func remakeConstraints(_ closure: @escaping ZTUIKitSteviaLayoutClosure) -> Self {
+    func remakeConstraints(_ closure: @escaping ZTUIKitSteviaLayoutClosure) -> Self {
         removeConstraints()
         closure(self.subject, self.subject.zt_find)
         return self
@@ -62,14 +62,14 @@ extension ZTWrapper where Subject: UIView {
     
     @MainActor
     @discardableResult
-    public func removeConstraints() -> Self {
+    func removeConstraints() -> Self {
         self.subject.removeConstraints(self.subject.constraints)
         return self
     }
     
     @MainActor
     @discardableResult
-    public func render() -> Subject {
+    func render() -> Subject {
         self.subject.render()
         return self.subject
     }
