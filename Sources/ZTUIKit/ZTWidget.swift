@@ -12,6 +12,7 @@
 
 
 import UIKit
+import ZTChain
 
 @MainActor
 @objc public protocol ZTWidgetBaseProtocol : AnyObject {
@@ -42,22 +43,22 @@ public extension UIView {
         }
     }
     
-    public convenience init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
+    convenience init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
         self.init(widgets())
     }
     
-    public convenience init(_ ws: [any ZTWidgetProtocol]) {
+    convenience init(_ ws: [any ZTWidgetProtocol]) {
         self.init(frame: .zero)
         add(ws)
     }
     
-    public func add(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) -> Self {
+    func add(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) -> Self {
         let subWidgets = widgets()
         add(subWidgets)
         return self
     }
     
-    public func add(_ widgets:[any ZTWidgetProtocol]) {
+    func add(_ widgets:[any ZTWidgetProtocol]) {
         for widget in widgets {
             if let wrapperWidget = widget as? ZTWrapperWidget {
                 add(wrapperWidget.subWidgets)
@@ -67,7 +68,7 @@ public extension UIView {
         }
     }
     
-    public func removeWidgets(_ widgets: [any ZTWidgetProtocol]) {
+    func removeWidgets(_ widgets: [any ZTWidgetProtocol]) {
         for widget in widgets {
             widget.willBeRemoved()
             widget.view.removeFromSuperview()
@@ -323,6 +324,22 @@ public class ZTSpacer : UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+public extension ZTWrapper where Subject: UIView {
+    @MainActor
+    @discardableResult
+    func render() -> Subject {
+        self.subject.render()
+        return self.subject
+    }
+    
+    @MainActor
+    @discardableResult
+    func addTo(_ superview:UIView) -> Self {
+        superview.addSubview(subject)
+        return self
     }
 }
 

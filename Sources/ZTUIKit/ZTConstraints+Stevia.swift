@@ -14,31 +14,22 @@
 import UIKit
 import ZTChain
 
-#if canImport(Stevia) /*&& ZTUIKIT_STEVIA*/
+#if canImport(Stevia)
 import Stevia
 
 
-public typealias ZTUIKitSteviaLayoutClosure = (_ v: UIView, _ dom: (String) -> UIView?) -> Void
+public typealias ZTSteviaLayoutClosure = (_ v: UIView, _ dom: (String) -> UIView?) -> Void
 
 public extension UIView {
-    private static var zt_layoutClosuresKey: UInt8 = 0
+    private static var zt_steviaLayoutClosuresKey: UInt8 = 0
     
     @MainActor
-    fileprivate var layoutClosures: ZTUIKitSteviaLayoutClosure? {
+    var steviaLayoutClosures: ZTSteviaLayoutClosure? {
         get {
-            return objc_getAssociatedObject(self, &Self.zt_layoutClosuresKey) as? ZTUIKitSteviaLayoutClosure
+            return objc_getAssociatedObject(self, &Self.zt_steviaLayoutClosuresKey) as? ZTSteviaLayoutClosure
         }
         set {
-            objc_setAssociatedObject(self, &Self.zt_layoutClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    @MainActor
-    func bindConstraints() {
-        if let closures = self.layoutClosures {
-            assert(superview != nil)
-            closures(self, self.zt_find)
-            self.layoutClosures = nil
+            objc_setAssociatedObject(self, &Self.zt_steviaLayoutClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }
@@ -47,31 +38,24 @@ public extension UIView {
 public extension ZTWrapper where Subject: UIView {
     @MainActor
     @discardableResult
-    func makeConstraints(_ closure: @escaping ZTUIKitSteviaLayoutClosure) -> Self {
-        self.subject.layoutClosures = closure
+    func makeStevia(_ closure: @escaping ZTSteviaLayoutClosure) -> Self {
+        self.subject.steviaLayoutClosures = closure
         return self
     }
     
     @MainActor
     @discardableResult
-    func remakeConstraints(_ closure: @escaping ZTUIKitSteviaLayoutClosure) -> Self {
-        removeConstraints()
+    func remakeStevia(_ closure: @escaping ZTSteviaLayoutClosure) -> Self {
+        removeStevia()
         closure(self.subject, self.subject.zt_find)
         return self
     }
     
     @MainActor
     @discardableResult
-    func removeConstraints() -> Self {
-        self.subject.removeConstraints(self.subject.constraints)
+    func removeStevia() -> Self {
+        self.subject.removeConstraints(self.subject.userAddedConstraints)
         return self
-    }
-    
-    @MainActor
-    @discardableResult
-    func render() -> Subject {
-        self.subject.render()
-        return self.subject
     }
 }
 

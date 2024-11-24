@@ -8,10 +8,11 @@
 
 import UIKit
 import Stevia
+import ZTUIKitExt
 
 
 @MainActor
-func loginWidget() -> some UIView {
+func steivaLoginWidget() -> some UIView {
     var nameLbl: UILabel?
     var pwdLbl: UILabel?
     var usrTextField: UITextField?
@@ -23,10 +24,10 @@ func loginWidget() -> some UIView {
                 UILabel("User:").zt.ref(&nameLbl).subject
                 ZTSpacer(axis: .h)
                 UITextField("字母数字下划线").zt.ref(&usrTextField).backgroundColor(.gray)
-                    .makeConstraints { v, dom in
+                    .makeStevia { v, dom in
                         v.width(200).height(100)
                     }.subject
-            }.zt.alignment(.fill).spacing(2).makeConstraints { v, dom in
+            }.zt.alignment(.fill).spacing(2).makeStevia { v, dom in
                 |v|
             }.subject
             
@@ -47,21 +48,21 @@ func loginWidget() -> some UIView {
 }
 
 @MainActor
-func loginWidget2(_ bs:Bool) -> some UIView {
+func steivaLoginWidget2(_ bs:Bool) -> some UIView {
     var nameLbl: UILabel?
     var usrTextField: UITextField?
     
     let container = UIView {
         if bs {
-            UILabel("User:").zt.ref(&nameLbl).makeConstraints { v, dom in
+            UILabel("User:").zt.ref(&nameLbl).makeStevia { v, dom in
                 v.left(10).top(10).width(80).height(20)
             }.subject
         } else {
-            UILabel("PWD:").zt.ref(&nameLbl).makeConstraints { v, dom in
+            UILabel("PWD:").zt.ref(&nameLbl).makeStevia { v, dom in
                 v.left(10).top(10).width(80).height(20)
             }.subject
         }
-        UITextField("字母数字下划线").zt.ref(&usrTextField).backgroundColor(.gray).makeConstraints { v, dom in
+        UITextField("字母数字下划线").zt.ref(&usrTextField).backgroundColor(.gray).makeStevia { v, dom in
             v.Left == nameLbl!.Right + 10
             v.Top == nameLbl!.Top
             v.width(200).height(20)
@@ -107,11 +108,11 @@ class SteviaVC: UIViewController {
         super.viewDidLoad()
         
         view.add {
-            loginWidget().zt.domId("#v1").backgroundColor(.purple).makeConstraints { v, dom in
+            steivaLoginWidget().zt.domId("#v1").backgroundColor(.purple).makeStevia { v, dom in
                 v.width(300).centerInContainer()
             }.build()
             
-            loginWidget2(true).zt.makeConstraints { v, dom in
+            steivaLoginWidget2(true).zt.makeStevia { v, dom in
                 v.width(300).height(40).centerHorizontally()
                 v.Top == dom("#v1")!.Bottom + 20
             }.build()

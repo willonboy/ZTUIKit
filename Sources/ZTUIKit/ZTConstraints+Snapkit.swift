@@ -14,48 +14,36 @@
 import UIKit
 import ZTChain
 
-#if canImport(SnapKit) && ZTUIKIT_SNAPKIT
+#if canImport(SnapKit)
 import SnapKit
 
-public typealias ZTUIKitSnapkitLayoutClosure = (_ make: ConstraintMaker, _ dom: (String) -> UIView?) -> Void
+public typealias ZTSnapkitLayoutClosure = (_ make: ConstraintMaker, _ dom: (String) -> UIView?) -> Void
 
 public extension UIView {
-    private static var zt_layoutClosuresKey: UInt8 = 0
+    private static var zt_snpLayoutClosuresKey: UInt8 = 0
     
     @MainActor
-    fileprivate var layoutClosures: ZTUIKitSnapkitLayoutClosure? {
+    var snpLayoutClosures: ZTSnapkitLayoutClosure? {
         get {
-            return objc_getAssociatedObject(self, &Self.zt_layoutClosuresKey) as? ZTUIKitSnapkitLayoutClosure
+            return objc_getAssociatedObject(self, &Self.zt_snpLayoutClosuresKey) as? ZTSnapkitLayoutClosure
         }
         set {
-            objc_setAssociatedObject(self, &Self.zt_layoutClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    @MainActor
-    func bindConstraints() {
-        if let closures = self.layoutClosures {
-            assert(superview != nil)
-            self.snp.makeConstraints { make in
-                closures(make, self.zt_find)
-            }
-            self.layoutClosures = nil
+            objc_setAssociatedObject(self, &Self.zt_snpLayoutClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }
 
-
 public extension ZTWrapper where Subject: UIView {
     @MainActor
     @discardableResult
-    func makeConstraints(_ closure: @escaping ZTUIKitSnapkitLayoutClosure) -> Self {
-        self.subject.layoutClosures = closure
+    func makeSnapkit(_ closure: @escaping ZTSnapkitLayoutClosure) -> Self {
+        self.subject.snpLayoutClosures = closure
         return self
     }
     
     @MainActor
     @discardableResult
-    func remakeConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
+    func remakeSnapkit(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
         self.subject.snp.remakeConstraints { make in
             closure(make)
         }
@@ -64,7 +52,7 @@ public extension ZTWrapper where Subject: UIView {
     
     @MainActor
     @discardableResult
-    func updateConstraints(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
+    func updateSnapkit(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
         self.subject.snp.updateConstraints { make in
             closure(make)
         }
@@ -73,16 +61,9 @@ public extension ZTWrapper where Subject: UIView {
     
     @MainActor
     @discardableResult
-    func removeConstraints() -> Self {
+    func removeSnapkit() -> Self {
         self.subject.snp.removeConstraints()
         return self
-    }
-    
-    @MainActor
-    @discardableResult
-    func render() -> Subject {
-        self.subject.render()
-        return self.subject
     }
 }
 #endif

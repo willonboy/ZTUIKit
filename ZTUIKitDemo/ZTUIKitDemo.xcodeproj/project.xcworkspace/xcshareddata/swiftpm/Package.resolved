@@ -26,6 +26,15 @@
         "revision" : "5d295f987c835f0e207ffcbc3e6ea0c76106c767",
         "version" : "1.0.4"
       }
+    },
+    {
+      "identity" : "ztuikitext",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/willonboy/ZTUIKitExt",
+      "state" : {
+        "branch" : "main",
+        "revision" : "6160c8cdb8de1da59bfd7e7fa591471b42183727"
+      }
     }
   ],
   "version" : 2

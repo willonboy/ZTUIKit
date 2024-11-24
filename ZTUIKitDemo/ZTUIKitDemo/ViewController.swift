@@ -9,19 +9,9 @@ import UIKit
 import SnapKit
 import ZTChain
 
-extension ZTWrapper where Subject: UIView {
-    @MainActor
-    @discardableResult
-    public func addTo(_ superview:UIView) -> Self {
-        superview.addSubview(subject)
-        return self
-    }
-}
-
-#if ZTUIKIT_SNAPKIT
 
 @MainActor
-func loginWidget() -> some UIView {
+func snpLoginWidget() -> some UIView {
     var nameLbl: UILabel?
     var pwdLbl: UILabel?
     var usrTextField: UITextField?
@@ -33,7 +23,7 @@ func loginWidget() -> some UIView {
                 UILabel("User:").zt.ref(&nameLbl).subject
                 ZTSpacer(10, axis: .h)
                 UITextField("字母数字下划线").zt.ref(&usrTextField).backgroundColor(.gray)
-                    .makeConstraints { make, _ in
+                    .makeSnapkit { make, _ in
                     make.width.equalTo(200)
                     make.height.equalTo(100)
                 }.subject
@@ -57,26 +47,26 @@ func loginWidget() -> some UIView {
 
 
 @MainActor
-func loginWidget2(_ bs:Bool) -> some UIView {
+func snpLoginWidget2(_ bs:Bool) -> some UIView {
     var nameLbl: UILabel?
     var usrTextField: UITextField?
     
     let container = UIView {
         
         if bs {
-            UILabel("User:").zt.ref(&nameLbl).makeConstraints { make, _ in
+            UILabel("User:").zt.ref(&nameLbl).makeSnapkit { make, _ in
                 make.left.top.equalTo(10)
                 make.width.equalTo(80)
                 make.height.equalTo(20)
             }.subject
         } else {
-            UILabel("PWD:").zt.ref(&nameLbl).makeConstraints { make, _ in
+            UILabel("PWD:").zt.ref(&nameLbl).makeSnapkit { make, _ in
                 make.left.top.equalTo(10)
                 make.width.equalTo(80)
                 make.height.equalTo(20)
             }.subject
         }
-        UITextField("字母数字下划线").zt.ref(&usrTextField).backgroundColor(.gray).makeConstraints { make, _ in
+        UITextField("字母数字下划线").zt.ref(&usrTextField).backgroundColor(.gray).makeSnapkit { make, _ in
             make.left.equalTo(nameLbl!.snp.right).offset(10)
             make.top.equalTo(nameLbl!)
             make.width.equalTo(200)
@@ -115,26 +105,23 @@ func loginWidget2(_ bs:Bool) -> some UIView {
     }
     return container
 }
-#endif
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        #if ZTUIKIT_SNAPKIT
-        let stack = loginWidget().zt.addTo(self.view).backgroundColor(.purple).makeConstraints { make, _ in
+        let stack = snpLoginWidget().zt.addTo(self.view).backgroundColor(.purple).makeSnapkit { make, _ in
             make.width.equalTo(300)
             make.center.equalTo(self.view)
         }.render()
         
-        loginWidget2(true).zt.addTo(self.view).makeConstraints { make, _ in
+        snpLoginWidget2(true).zt.addTo(self.view).makeSnapkit { make, _ in
             make.width.equalTo(300)
             make.height.equalTo(40)
             make.centerX.equalToSuperview()
             make.top.equalTo(stack.snp.bottom).offset(20)
         }.render()
-        #endif
     }
 }
 
