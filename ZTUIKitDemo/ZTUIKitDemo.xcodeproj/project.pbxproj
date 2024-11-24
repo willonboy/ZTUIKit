@@ -22,6 +22,7 @@
 		973C2D192CF2C95900F06880 /* ZTConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973C2D182CF2C95900F06880 /* ZTConstraints.swift */; };
 		973C2D1D2CF2D42900F06880 /* ZTUIKitExt in Frameworks */ = {isa = PBXBuildFile; productRef = 973C2D1C2CF2D42900F06880 /* ZTUIKitExt */; };
 		976BF0A92CCA6BED004F7D55 /* ZTChain in Frameworks */ = {isa = PBXBuildFile; productRef = 976BF0A82CCA6BED004F7D55 /* ZTChain */; };
+		977A633E2CF2F0CB00C08E46 /* ZTStyle in Frameworks */ = {isa = PBXBuildFile; productRef = 977A633D2CF2F0CB00C08E46 /* ZTStyle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				977A633E2CF2F0CB00C08E46 /* ZTStyle in Frameworks */,
 				973C2D1D2CF2D42900F06880 /* ZTUIKitExt in Frameworks */,
 				7B4465102CEF1141003DDF76 /* Stevia in Frameworks */,
 				976BF0A92CCA6BED004F7D55 /* ZTChain in Frameworks */,
@@ -136,6 +138,7 @@
 				976BF0A82CCA6BED004F7D55 /* ZTChain */,
 				7B44650F2CEF1141003DDF76 /* Stevia */,
 				973C2D1C2CF2D42900F06880 /* ZTUIKitExt */,
+				977A633D2CF2F0CB00C08E46 /* ZTStyle */,
 			);
 			productName = ZTUIKitDemo;
 			productReference = 971D903A2C0F693000EE3A49 /* ZTUIKitDemo.app */;
@@ -170,6 +173,7 @@
 				976BF0A72CCA6BED004F7D55 /* XCRemoteSwiftPackageReference "ZTChain" */,
 				7B44650E2CEF1141003DDF76 /* XCRemoteSwiftPackageReference "Stevia" */,
 				973C2D1A2CF2CF6600F06880 /* XCRemoteSwiftPackageReference "ZTUIKitExt" */,
+				977A633C2CF2F0CB00C08E46 /* XCRemoteSwiftPackageReference "ZTStyle" */,
 			);
 			productRefGroup = 971D903B2C0F693000EE3A49 /* Products */;
 			projectDirPath = "";
@@ -456,6 +460,14 @@
 				minimumVersion = 1.0.4;
 			};
 		};
+		977A633C2CF2F0CB00C08E46 /* XCRemoteSwiftPackageReference "ZTStyle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/willonboy/ZTStyle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -482,6 +494,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 976BF0A72CCA6BED004F7D55 /* XCRemoteSwiftPackageReference "ZTChain" */;
 			productName = ZTChain;
+		};
+		977A633D2CF2F0CB00C08E46 /* ZTStyle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 977A633C2CF2F0CB00C08E46 /* XCRemoteSwiftPackageReference "ZTStyle" */;
+			productName = ZTStyle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

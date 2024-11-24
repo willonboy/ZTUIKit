@@ -28,6 +28,15 @@
       }
     },
     {
+      "identity" : "ztstyle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/willonboy/ZTStyle",
+      "state" : {
+        "revision" : "c2dc02bb278a439c0aa95eeb2ec6f0e8b29fc346",
+        "version" : "2.0.0"
+      }
+    },
+    {
       "identity" : "ztuikitext",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/willonboy/ZTUIKitExt",

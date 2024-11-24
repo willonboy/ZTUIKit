@@ -87,11 +87,6 @@ public extension UIView {
     @objc func render()
 }
 
-public extension ZTWidgetProtocol {
-    @MainActor
-    func bindConstraints() {}
-}
-
 extension UIView : ZTWidgetProtocol {
     public func willBeAdded(){}
     public func didAdded(){}
