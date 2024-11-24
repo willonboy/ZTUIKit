@@ -17,11 +17,12 @@ import SnapKit
 public extension UIView {
     @MainActor
     func bindConstraints() {
-        if self.steviaLayoutClosures != nil && self.snpLayoutClosures != nil {
-#if DEBUG
+#if DEBUG && canImport(SnapKit) && canImport(Stevia)
+        if self.steviaLayoutClosures != nil
+            && self.snpLayoutClosures != nil {
             assert(false)
-#endif
         }
+#endif
 #if canImport(SnapKit)
         if let closures = self.snpLayoutClosures {
             assert(superview != nil)
