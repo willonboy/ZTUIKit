@@ -98,7 +98,9 @@ extension UIView : ZTWidgetProtocol {
     public func willBeRemoved(){}
     public func didRemoved(){}
     public func render() {
-        translatesAutoresizingMaskIntoConstraints = false
+        if self.next is UIViewController == false {
+            translatesAutoresizingMaskIntoConstraints = false
+        }
         bindConstraints()
         for widget in subWidgets {
             widget.willBeAdded()
