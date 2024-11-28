@@ -22,5 +22,18 @@ Pod::Spec.new do |s|
   
   s.dependency 'ZTChain', '~> 1.0.2'
   s.dependency 'ZTStyle', '~> 2.0.0'
-  s.dependency 'SteviaLayout', '~> 5.1.2'
+  s.default_subspec = 'Default'
+
+  s.subspec 'Default' do |ss| 
+    s.dependency 'SteviaLayout', '~> 5.1.2'
+    s.dependency 'SnapKit', '~> 5.7.1'
+  end
+
+  s.subspec 'Stevia' do |ss| 
+    s.dependency 'SteviaLayout', '~> 5.1.2'
+  end
+
+  s.subspec 'SnapKit' do |ss| 
+    s.dependency 'SnapKit', '~> 5.7.1'
+  end
 end
