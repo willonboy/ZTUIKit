@@ -76,6 +76,15 @@ public extension UIView {
             subWidgets.removeAll { $0 === widget }
         }
     }
+    
+    func cleanSubWidgets() {
+        for widget in subWidgets {
+            widget.willBeRemoved()
+            widget.view.removeFromSuperview()
+            widget.didRemoved()
+        }
+        subWidgets.removeAll()
+    }
 }
 
 @MainActor
