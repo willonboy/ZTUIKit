@@ -102,7 +102,7 @@ extension UIView : ZTWidgetProtocol {
     public func willBeRemoved(){}
     public func didRemoved(){}
     public func render() {
-        if self.next is UIViewController == false {
+        if self.next is UIViewController == false, self is UIWindow == false {
             translatesAutoresizingMaskIntoConstraints = false
         }
         bindConstraints()
