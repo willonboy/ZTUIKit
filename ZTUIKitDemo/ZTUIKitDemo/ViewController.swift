@@ -6,8 +6,8 @@
 //
 
 import UIKit
+import ZTUIKit
 import SnapKit
-import ZTChain
 
 
 @MainActor

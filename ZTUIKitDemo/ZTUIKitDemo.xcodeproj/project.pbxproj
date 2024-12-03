@@ -3,30 +3,25 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		7B4465102CEF1141003DDF76 /* Stevia in Frameworks */ = {isa = PBXBuildFile; productRef = 7B44650F2CEF1141003DDF76 /* Stevia */; };
-		7B4465122CEF1171003DDF76 /* ZTConstraints+Stevia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4465112CEF1165003DDF76 /* ZTConstraints+Stevia.swift */; };
 		7B4465142CEF3253003DDF76 /* SteviaVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4465132CEF324B003DDF76 /* SteviaVC.swift */; };
 		971D903E2C0F693000EE3A49 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D903D2C0F693000EE3A49 /* AppDelegate.swift */; };
 		971D90422C0F693000EE3A49 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D90412C0F693000EE3A49 /* ViewController.swift */; };
 		971D90472C0F693200EE3A49 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 971D90462C0F693200EE3A49 /* Assets.xcassets */; };
 		971D904A2C0F693200EE3A49 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 971D90482C0F693200EE3A49 /* LaunchScreen.storyboard */; };
-		971D905A2C0F69BF00EE3A49 /* ZTConstraints+Snapkit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D90562C0F69BF00EE3A49 /* ZTConstraints+Snapkit.swift */; };
-		971D905B2C0F69BF00EE3A49 /* ZTWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D90572C0F69BF00EE3A49 /* ZTWidget.swift */; };
 		971D905C2C0F69BF00EE3A49 /* ZTUIKit.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 971D90582C0F69BF00EE3A49 /* ZTUIKit.podspec */; };
 		971D905F2C0F6C0300EE3A49 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 971D905E2C0F6C0300EE3A49 /* SnapKit */; };
 		971D90642C0F6C2600EE3A49 /* ZTChain in Frameworks */ = {isa = PBXBuildFile; productRef = 971D90632C0F6C2600EE3A49 /* ZTChain */; };
-		973C2D192CF2C95900F06880 /* ZTConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973C2D182CF2C95900F06880 /* ZTConstraints.swift */; };
-		973C2D1D2CF2D42900F06880 /* ZTUIKitExt in Frameworks */ = {isa = PBXBuildFile; productRef = 973C2D1C2CF2D42900F06880 /* ZTUIKitExt */; };
+		97269CEF2CFF3F4C00C3A446 /* ZTUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 97269CEE2CFF3F4C00C3A446 /* ZTUIKit */; };
 		976BF0A92CCA6BED004F7D55 /* ZTChain in Frameworks */ = {isa = PBXBuildFile; productRef = 976BF0A82CCA6BED004F7D55 /* ZTChain */; };
 		977A633E2CF2F0CB00C08E46 /* ZTStyle in Frameworks */ = {isa = PBXBuildFile; productRef = 977A633D2CF2F0CB00C08E46 /* ZTStyle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7B4465112CEF1165003DDF76 /* ZTConstraints+Stevia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ZTConstraints+Stevia.swift"; sourceTree = "<group>"; };
 		7B4465132CEF324B003DDF76 /* SteviaVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteviaVC.swift; sourceTree = "<group>"; };
 		971D903A2C0F693000EE3A49 /* ZTUIKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZTUIKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		971D903D2C0F693000EE3A49 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -34,10 +29,7 @@
 		971D90462C0F693200EE3A49 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		971D90492C0F693200EE3A49 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		971D904B2C0F693200EE3A49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		971D90562C0F69BF00EE3A49 /* ZTConstraints+Snapkit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ZTConstraints+Snapkit.swift"; sourceTree = "<group>"; };
-		971D90572C0F69BF00EE3A49 /* ZTWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZTWidget.swift; sourceTree = "<group>"; };
 		971D90582C0F69BF00EE3A49 /* ZTUIKit.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ZTUIKit.podspec; path = ../ZTUIKit.podspec; sourceTree = "<group>"; };
-		973C2D182CF2C95900F06880 /* ZTConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZTConstraints.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,9 +38,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				977A633E2CF2F0CB00C08E46 /* ZTStyle in Frameworks */,
-				973C2D1D2CF2D42900F06880 /* ZTUIKitExt in Frameworks */,
 				7B4465102CEF1141003DDF76 /* Stevia in Frameworks */,
 				976BF0A92CCA6BED004F7D55 /* ZTChain in Frameworks */,
+				97269CEF2CFF3F4C00C3A446 /* ZTUIKit in Frameworks */,
 				971D90642C0F6C2600EE3A49 /* ZTChain in Frameworks */,
 				971D905F2C0F6C0300EE3A49 /* SnapKit in Frameworks */,
 			);
@@ -60,7 +52,6 @@
 		971D90312C0F692F00EE3A49 = {
 			isa = PBXGroup;
 			children = (
-				971D90542C0F69BF00EE3A49 /* Sources */,
 				971D90582C0F69BF00EE3A49 /* ZTUIKit.podspec */,
 				971D903C2C0F693000EE3A49 /* ZTUIKitDemo */,
 				971D903B2C0F693000EE3A49 /* Products */,
@@ -87,26 +78,6 @@
 				971D904B2C0F693200EE3A49 /* Info.plist */,
 			);
 			path = ZTUIKitDemo;
-			sourceTree = "<group>";
-		};
-		971D90542C0F69BF00EE3A49 /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				971D90552C0F69BF00EE3A49 /* ZTUIKit */,
-			);
-			name = Sources;
-			path = ../Sources;
-			sourceTree = "<group>";
-		};
-		971D90552C0F69BF00EE3A49 /* ZTUIKit */ = {
-			isa = PBXGroup;
-			children = (
-				971D90562C0F69BF00EE3A49 /* ZTConstraints+Snapkit.swift */,
-				7B4465112CEF1165003DDF76 /* ZTConstraints+Stevia.swift */,
-				973C2D182CF2C95900F06880 /* ZTConstraints.swift */,
-				971D90572C0F69BF00EE3A49 /* ZTWidget.swift */,
-			);
-			path = ZTUIKit;
 			sourceTree = "<group>";
 		};
 		973C2D1B2CF2D42900F06880 /* Frameworks */ = {
@@ -137,8 +108,8 @@
 				971D90632C0F6C2600EE3A49 /* ZTChain */,
 				976BF0A82CCA6BED004F7D55 /* ZTChain */,
 				7B44650F2CEF1141003DDF76 /* Stevia */,
-				973C2D1C2CF2D42900F06880 /* ZTUIKitExt */,
 				977A633D2CF2F0CB00C08E46 /* ZTStyle */,
+				97269CEE2CFF3F4C00C3A446 /* ZTUIKit */,
 			);
 			productName = ZTUIKitDemo;
 			productReference = 971D903A2C0F693000EE3A49 /* ZTUIKitDemo.app */;
@@ -172,8 +143,8 @@
 				971D905D2C0F6C0300EE3A49 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				976BF0A72CCA6BED004F7D55 /* XCRemoteSwiftPackageReference "ZTChain" */,
 				7B44650E2CEF1141003DDF76 /* XCRemoteSwiftPackageReference "Stevia" */,
-				973C2D1A2CF2CF6600F06880 /* XCRemoteSwiftPackageReference "ZTUIKitExt" */,
 				977A633C2CF2F0CB00C08E46 /* XCRemoteSwiftPackageReference "ZTStyle" */,
+				97269CED2CFF3F4C00C3A446 /* XCLocalSwiftPackageReference ".." */,
 			);
 			productRefGroup = 971D903B2C0F693000EE3A49 /* Products */;
 			projectDirPath = "";
@@ -202,12 +173,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				973C2D192CF2C95900F06880 /* ZTConstraints.swift in Sources */,
-				971D905B2C0F69BF00EE3A49 /* ZTWidget.swift in Sources */,
 				971D90422C0F693000EE3A49 /* ViewController.swift in Sources */,
 				7B4465142CEF3253003DDF76 /* SteviaVC.swift in Sources */,
-				971D905A2C0F69BF00EE3A49 /* ZTConstraints+Snapkit.swift in Sources */,
-				7B4465122CEF1171003DDF76 /* ZTConstraints+Stevia.swift in Sources */,
 				971D903E2C0F693000EE3A49 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -427,6 +394,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		97269CED2CFF3F4C00C3A446 /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		7B44650E2CEF1141003DDF76 /* XCRemoteSwiftPackageReference "Stevia" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -442,14 +416,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.7.1;
-			};
-		};
-		973C2D1A2CF2CF6600F06880 /* XCRemoteSwiftPackageReference "ZTUIKitExt" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/willonboy/ZTUIKitExt";
-			requirement = {
-				branch = main;
-				kind = branch;
 			};
 		};
 		976BF0A72CCA6BED004F7D55 /* XCRemoteSwiftPackageReference "ZTChain" */ = {
@@ -485,10 +451,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = ZTChain;
 		};
-		973C2D1C2CF2D42900F06880 /* ZTUIKitExt */ = {
+		97269CEE2CFF3F4C00C3A446 /* ZTUIKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 973C2D1A2CF2CF6600F06880 /* XCRemoteSwiftPackageReference "ZTUIKitExt" */;
-			productName = ZTUIKitExt;
+			productName = ZTUIKit;
 		};
 		976BF0A82CCA6BED004F7D55 /* ZTChain */ = {
 			isa = XCSwiftPackageProductDependency;
