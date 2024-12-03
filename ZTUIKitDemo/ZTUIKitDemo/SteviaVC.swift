@@ -116,7 +116,7 @@ class SteviaVC: UIViewController {
                 v.width(300).height(40).centerHorizontally()
                 v.Top == dom("#v1")!.Bottom + 20
             }.build()
-        }.render()
+        }.ztRender()
     }
 }
 

@@ -36,6 +36,9 @@ public extension UIView {
 #if canImport(Stevia)
         if let closures = self.steviaLayoutClosures {
             assert(superview != nil)
+            //if self.next is UIViewController == false, self is UIWindow == false  {
+                translatesAutoresizingMaskIntoConstraints = false
+            //}
             closures(self, self.zt_find)
             self.steviaLayoutClosures = nil
         }

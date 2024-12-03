@@ -93,7 +93,7 @@ public extension UIView {
     @objc func didAdded()
     @objc func willBeRemoved()
     @objc func didRemoved()
-    @objc func render()
+    @objc func ztRender()
 }
 
 extension UIView : ZTWidgetProtocol {
@@ -101,10 +101,7 @@ extension UIView : ZTWidgetProtocol {
     public func didAdded(){}
     public func willBeRemoved(){}
     public func didRemoved(){}
-    public func render() {
-        if self.next is UIViewController == false, self is UIWindow == false {
-            translatesAutoresizingMaskIntoConstraints = false
-        }
+    public func ztRender() {
         bindConstraints()
         for widget in subWidgets {
             widget.willBeAdded()
@@ -114,7 +111,7 @@ extension UIView : ZTWidgetProtocol {
                 addSubview(widget.view)
             }
             widget.didAdded()
-            widget.render()
+            widget.ztRender()
         }
     }
 }
@@ -337,7 +334,7 @@ public extension ZTWrapper where Subject: UIView {
     @MainActor
     @discardableResult
     func render() -> Subject {
-        self.subject.render()
+        self.subject.ztRender()
         return self.subject
     }
     
