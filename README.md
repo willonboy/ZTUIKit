@@ -50,4 +50,4 @@ ZTUIKit is specifically designed for UIKit, providing a SwiftUI-like experience 
 For more detailed usage instructions and examples, please refer to the [documentation](https://github.com/willonboy/ZTUIKit).
 
 ## License
-ZTUIKit is available under the MPL-2.0 license. See the [LICENSE](LICENSE) file for more information.
+ZTUIKit is available under the AGPLv3 license. See the [LICENSE](LICENSE) file for more information.
