@@ -19,32 +19,24 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
 
-
 import UIKit
+import ZTChain
 
 @MainActor
 public extension UIImageView {
     convenience init(name:String, bundle:Bundle? = nil, conf:UIImage.Configuration? = nil) {
-        self.init()
-        if bundle != nil {
-            image = UIImage(named: name, in: bundle, with: conf)
-        } else {
-            image = UIImage(named: name)
-        }
+        self.init(image:UIImage(named: name, in: bundle ?? .main, with: conf))
     }
     
     convenience init(file:String) {
-        self.init()
-        image = UIImage(contentsOfFile: file)
+        self.init(image:UIImage(contentsOfFile: file))
     }
     
     convenience init(systemName:String) {
-        self.init()
-        image = UIImage(systemName: systemName)
+        self.init(image:UIImage(systemName: systemName))
     }
     
     convenience init(data:Data) {
-        self.init()
-        image = UIImage(data: data)
+        self.init(image:UIImage(data: data))
     }
 }

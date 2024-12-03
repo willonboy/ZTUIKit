@@ -36,41 +36,9 @@ public extension UIView {
 
 @MainActor
 public extension ZTWrapper where Subject : UIView {
-    func x(_ originX:Double) -> Self {
-        var f = CGRectMake(originX, subject.frame.origin.y, subject.frame.size.width, subject.frame.size.height)
-        subject.frame = f
-        return self
-    }
-    
-    func y(_ originY:Double) -> Self {
-        var f = CGRectMake(subject.frame.origin.x, originY, subject.frame.size.width, subject.frame.size.height)
-        subject.frame = f
-        return self
-    }
-    
-    func w(_ width:Double) -> Self {
-        var f = CGRectMake(subject.frame.origin.x, subject.frame.origin.y, width, subject.frame.size.height)
-        subject.frame = f
-        return self
-    }
-    
-    func h(_ height:Double) -> Self {
-        var f = CGRectMake(subject.frame.origin.x, subject.frame.origin.y, subject.frame.size.width, height)
-        subject.frame = f
-        return self
-    }
-    
-    func size(_ size:Double) -> Self {
-        var f = CGRectMake(subject.frame.origin.x, subject.frame.origin.y, size, size)
-        subject.frame = f
-        return self
-    }
-}
-
-@MainActor
-public extension ZTWrapper where Subject : UIView {
-    func corner(_ r:CGFloat) -> Self {
+    func corner(_ r:CGFloat = 0, clips:Bool = false) -> Self {
         subject.layer.cornerRadius = r
+        subject.clipsToBounds = clips
         return self
     }
     
@@ -84,49 +52,38 @@ public extension ZTWrapper where Subject : UIView {
         return self
     }
     
-    func border(_ w:CGFloat, _ c:CGColor?) -> Self {
+    func border(_ w:CGFloat = 0, _ c:CGColor? = nil) -> Self {
         subject.layer.borderWidth = w
         subject.layer.borderColor = c
         return self
     }
     
-    func opacity(_ o:Float) -> Self {
+    func opacity(_ o:Float = 1) -> Self {
         subject.layer.opacity = o
         return self
     }
     
-    func masksToBounds(_ m:Bool) -> Self {
+    func masksToBounds(_ m:Bool = false) -> Self {
         subject.layer.masksToBounds = m
         return self
     }
     
-    func mask(_ m:CALayer?) -> Self {
+    func mask(_ m:CALayer? = nil) -> Self {
         subject.layer.mask = m
         return self
     }
     
-    func shadowColor(_ c:CGColor?) -> Self {
+    func shadow(_ c:CGColor? = nil, o:Float = 0, s:CGSize = .zero, r:CGFloat = 0, p:CGPath? = nil) -> Self {
         subject.layer.shadowColor = c
-        return self
-    }
-    
-    func shadowOpacity(_ o:Float) -> Self {
         subject.layer.shadowOpacity = o
-        return self
-    }
-    
-    func shadowOffset(_ s:CGSize) -> Self {
         subject.layer.shadowOffset = s
-        return self
-    }
-    
-    func shadowRadius(_ r:CGFloat) -> Self {
         subject.layer.shadowRadius = r
+        subject.layer.shadowPath = p
         return self
     }
     
-    func shadowPath(_ p:CGPath?) -> Self {
-        subject.layer.shadowPath = p
+    func bgColor(_ c:UIColor? = nil) -> Self {
+        subject.backgroundColor = c
         return self
     }
 }

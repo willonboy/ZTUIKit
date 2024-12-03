@@ -25,28 +25,27 @@ import ZTChain
 
 @MainActor
 public extension UIButton {
-    private static var zt_onClickClosureKey: UInt8 = 0
     convenience init(_ title:String, _ onClick:((UIButton)->Void)? = nil) {
-        self.init(title, onClick:onClick)
+        self.init(title, sysFont:nil,  onClick)
     }
     
     convenience init(named:String, _ onClick:((UIButton)->Void)? = nil) {
-        self.init(img:UIImage(named: named), onClick:onClick)
+        self.init(img:UIImage(named: named), onClick)
     }
     
     convenience init(systemName:String, _ onClick:((UIButton)->Void)? = nil) {
-        self.init(img:UIImage(systemName: systemName), onClick:onClick)
+        self.init(img:UIImage(systemName: systemName), onClick)
     }
     
     convenience init(imgFile:String, _ onClick:((UIButton)->Void)? = nil) {
-        self.init(img:UIImage(contentsOfFile: imgFile), onClick:onClick)
+        self.init(img:UIImage(contentsOfFile: imgFile), onClick)
     }
     
     convenience init(img:UIImage, _ onClick:((UIButton)->Void)? = nil) {
-        self.init(img:img, onClick:onClick)
+        self.init(sysFont:nil, img:img, onClick)
     }
     
-    convenience init(_ title:String? = nil, img:UIImage? = nil, bgImg:UIImage? = nil, onClick:((UIButton)->Void)? = nil) {
+    convenience init(_ title:String? = nil, sysFont:CGFloat? = nil, font:UIFont? = nil, color:UIColor? = nil, img:UIImage? = nil, bgImg:UIImage? = nil, _ onClick:((UIButton)->Void)? = nil) {
         self.init(type:.custom)
         self.onClick = onClick
         addTarget(self, action: #selector(onClickHandle), for: .touchUpInside)
@@ -57,10 +56,11 @@ public extension UIButton {
         
         backgroundColor = .clear
         titleLabel?.numberOfLines = 0
-        titleLabel?.font = UIFont.systemFont(ofSize: UIFont.labelFontSize)
-        setTitleColor(UIColor.label, for: .normal)
+        titleLabel?.font = font ?? UIFont.systemFont(ofSize: sysFont ?? UIFont.labelFontSize)
+        setTitleColor(color ?? UIColor.label, for: .normal)
     }
     
+    private static var zt_onClickClosureKey: UInt8 = 0
     var onClick: ((UIButton)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onClickClosureKey) as? ((UIButton)->Void)
@@ -114,6 +114,11 @@ public extension ZTWrapper where Subject : UIButton {
     
     func font(_ f:UIFont) -> Self {
         subject.titleLabel?.font = f
+        return self
+    }
+    
+    func font(_ sysFont:CGFloat, weight:UIFont.Weight? = nil) -> Self {
+        subject.titleLabel?.font = .systemFont(ofSize: sysFont, weight: weight ?? .regular)
         return self
     }
 }

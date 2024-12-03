@@ -19,14 +19,17 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
 
+
 import UIKit
+import ZTChain
 
 @MainActor
 public extension UITextField {
-    convenience init(_ placeholder:String) {
+    convenience init(_ placeholder:String, title:String? = nil, sysFont:CGFloat? = nil, font:UIFont? = nil, color:UIColor? = nil) {
         self.init()
         self.placeholder = placeholder
-        font = UIFont.systemFont(ofSize: UIFont.labelFontSize)
-        textColor = UIColor.label
+        text = title
+        self.font = font ?? UIFont.systemFont(ofSize: sysFont ?? UIFont.labelFontSize)
+        textColor = color ?? UIColor.label
     }
 }

@@ -20,7 +20,6 @@
 //
 
 
-
 import UIKit
 import ZTGenericBuilder
 
@@ -51,5 +50,9 @@ public extension UIViewController {
             }
         }
         present(alert, animated: animated, completion: completion)
+    }
+    
+    func present(_ animated: Bool = true, _ completion: (() -> Void)? = nil, @ZTVCBuilder _ vc: () -> UIViewController) {
+        present(vc(), animated: animated, completion: completion)
     }
 }

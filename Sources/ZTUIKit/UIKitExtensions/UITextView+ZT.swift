@@ -24,13 +24,10 @@ import UIKit
 import ZTChain
 
 @MainActor
-public extension UILabel {
-    convenience init(_ title:String, sysFont:CGFloat? = nil, font:UIFont? = nil, color:UIColor? = nil) {
+public extension UITextView {
+    convenience init(_ title:String? = nil, sysFont:CGFloat? = nil, font:UIFont? = nil, color:UIColor? = nil) {
         self.init()
         text = title
-        numberOfLines = 0
-        sizeToFit()
-        textAlignment = .natural
         self.font = font ?? UIFont.systemFont(ofSize: sysFont ?? UIFont.labelFontSize)
         textColor = color ?? UIColor.label
     }
