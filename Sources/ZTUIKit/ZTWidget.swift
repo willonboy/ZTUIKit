@@ -22,6 +22,9 @@
 
 import UIKit
 import ZTChain
+import ZTGenericBuilder
+
+public typealias ZTWidgetBuilder = ZTGenericBuilder<any ZTWidgetProtocol>
 
 @MainActor
 @objc public protocol ZTWidgetBaseProtocol : AnyObject {
@@ -52,16 +55,16 @@ public extension UIView {
         }
     }
     
-    convenience init(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) {
-        self.init(widgets())
+    convenience init(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) {
+        self.init(ws: widgets())
     }
     
-    convenience init(_ ws: [any ZTWidgetProtocol]) {
+    convenience init(_ frame:CGRect? = nil, ws: [any ZTWidgetProtocol]) {
         self.init(frame: .zero)
         add(ws)
     }
     
-    func add(@ZTWidgetBuilder widgets: () -> [any ZTWidgetProtocol]) -> Self {
+    func add(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) -> Self {
         let subWidgets = widgets()
         add(subWidgets)
         return self
@@ -69,11 +72,7 @@ public extension UIView {
     
     func add(_ widgets:[any ZTWidgetProtocol]) {
         for widget in widgets {
-            if let wrapperWidget = widget as? ZTWrapperWidget {
-                add(wrapperWidget.subWidgets)
-            } else {
-                subWidgets.append(widget)
-            }
+            subWidgets.append(widget)
         }
     }
     
@@ -105,12 +104,70 @@ public extension UIView {
     @objc func ztRender()
 }
 
+@MainActor
 extension UIView : ZTWidgetProtocol {
-    public func willBeAdded(){}
-    public func didAdded(){}
-    public func willBeRemoved(){}
-    public func didRemoved(){}
+    private static var zt_onWillBeAddedClosuresKey: UInt8 = 0
+    private static var zt_onDidAddedClosuresKey: UInt8 = 0
+    private static var zt_onWillBeRemovedClosuresKey: UInt8 = 0
+    private static var zt_onDidRemovedClosuresKey: UInt8 = 0
+    private static var zt_onWillRenderClosuresKey: UInt8 = 0
+    private static var zt_onDidRenderClosuresKey: UInt8 = 0
+    public var onWillBeAddedBlock: ((_ v:UIView)->Void)? {
+        get {
+            return objc_getAssociatedObject(self, &Self.zt_onWillBeAddedClosuresKey) as? ((_ v:UIView)->Void)
+        }
+        set {
+            objc_setAssociatedObject(self, &Self.zt_onWillBeAddedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    public var onDidAddedBlock: ((_ v:UIView)->Void)? {
+        get {
+            return objc_getAssociatedObject(self, &Self.zt_onDidAddedClosuresKey) as? ((_ v:UIView)->Void)
+        }
+        set {
+            objc_setAssociatedObject(self, &Self.zt_onDidAddedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    public var onWillBeRemovedBlock: ((_ v:UIView)->Void)? {
+        get {
+            return objc_getAssociatedObject(self, &Self.zt_onWillBeRemovedClosuresKey) as? ((_ v:UIView)->Void)
+        }
+        set {
+            objc_setAssociatedObject(self, &Self.zt_onWillBeRemovedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    public var onDidRemovedBlock: ((_ v:UIView)->Void)? {
+        get {
+            return objc_getAssociatedObject(self, &Self.zt_onDidRemovedClosuresKey) as? ((_ v:UIView)->Void)
+        }
+        set {
+            objc_setAssociatedObject(self, &Self.zt_onDidRemovedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    public var onWillRenderBlock: ((_ v:UIView)->Void)? {
+        get {
+            return objc_getAssociatedObject(self, &Self.zt_onWillRenderClosuresKey) as? ((_ v:UIView)->Void)
+        }
+        set {
+            objc_setAssociatedObject(self, &Self.zt_onWillRenderClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    public var onDidRenderBlock: ((_ v:UIView)->Void)? {
+        get {
+            return objc_getAssociatedObject(self, &Self.zt_onDidRenderClosuresKey) as? ((_ v:UIView)->Void)
+        }
+        set {
+            objc_setAssociatedObject(self, &Self.zt_onDidRenderClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    /// Note: A custom subclass of UIView must call these blocks itself.
+    public func willBeAdded() { onWillBeAddedBlock?(self) }
+    public func didAdded() { onDidAddedBlock?(self) }
+    public func willBeRemoved() { onWillBeRemovedBlock?(self) }
+    public func didRemoved() { onDidRemovedBlock?(self) }
     public func ztRender() {
+        onWillRenderBlock?(self)
         bindConstraints()
         for widget in subWidgets {
             widget.willBeAdded()
@@ -122,6 +179,7 @@ extension UIView : ZTWidgetProtocol {
             widget.didAdded()
             widget.ztRender()
         }
+        onDidRenderBlock?(self)
     }
 }
 
@@ -211,75 +269,19 @@ extension UIView {
     }
 }
 
-#if compiler(>=5.4)
-@resultBuilder
-#else
-@_functionBuilder
-#endif
 @MainActor
-public struct ZTWidgetBuilder {
-    
-    public static func buildBlock(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
-        widget
-    }
-    
-    public static func buildBlock(_ widgets: any ZTWidgetProtocol...) -> [any ZTWidgetProtocol] {
-        widgets
-    }
-    
-#if compiler(>=5.4)
-    // Support for conditional blocks (if statements without else)
-    public static func buildOptional(_ widget: (any ZTWidgetProtocol)?) -> any ZTWidgetProtocol {
-        guard widget != nil else { return ZTWrapperWidget([]) }
-        return widget!
-    }
-    
-#else
-    // Support for conditional blocks (if statements without else)
-    public static func buildIf(_ widget: (any ZTWidgetProtocol)?) -> any ZTWidgetProtocol {
-        guard widget != nil else {return ZTWrapperWidget([])}
-        return widget!
-    }
-#endif
-
-    // Support for conditional blocks (if-else statements)
-    public static func buildEither(first widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
-        widget
-    }
-
-    public static func buildEither(second widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
-        widget
-    }
-
-    // Support for loops (for-in statements)
-    public static func buildArray(_ widgets: [any ZTWidgetProtocol]) -> any ZTWidgetProtocol {
-        ZTWrapperWidget(widgets)
-    }
-
-    // Support for limited availability (e.g., #available)
-    public static func buildLimitedAvailability(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
-        widget
-    }
-
-    // Support for limited availability (e.g., #available)
-    public static func buildLimitedAvailability(_ widgets: [any ZTWidgetProtocol]) -> any ZTWidgetProtocol {
-        ZTWrapperWidget(widgets)
-    }
-
-    // Support for final result transformation
-    public static func buildFinalResult(_ widget: any ZTWidgetProtocol) -> any ZTWidgetProtocol {
-        widget
-    }
-    
-    // Support for final result transformation
-    public static func buildFinalResult(_ widgets: [any ZTWidgetProtocol]) -> [any ZTWidgetProtocol] {
-        widgets
+public extension UIStackView {
+    convenience init(_ frame:CGRect? = nil, space:CGFloat = 0, align:Alignment? = nil, dist:Distribution? = nil, @ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) {
+        self.init(frame, ws:widgets())
+        spacing = space
+        if let a = align {
+            alignment = a
+        }
+        if let d = dist {
+            distribution = d
+        }
     }
 }
-
-/// Like React JSX <React.Fragment>
-@MainActor
-public class ZTWrapperWidget : UIView {}
 
 @MainActor
 open class ZTHStack: UIStackView {
@@ -339,15 +341,14 @@ public class ZTSpacer : UIView {
     }
 }
 
+@MainActor
 public extension ZTWrapper where Subject: UIView {
-    @MainActor
     @discardableResult
     func render() -> Subject {
         self.subject.ztRender()
         return self.subject
     }
     
-    @MainActor
     @discardableResult
     func addTo(_ superview:UIView) -> Self {
         superview.addSubview(subject)

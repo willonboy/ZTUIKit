@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/willonboy/ZTChain",
       "state" : {
-        "revision" : "5d295f987c835f0e207ffcbc3e6ea0c76106c767",
-        "version" : "1.0.4"
+        "revision" : "a89c1c65ac1dcb4925e64a28646795451ec64b5c",
+        "version" : "1.0.5"
       }
     },
     {
@@ -32,7 +32,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/willonboy/ZTGenericBuilder",
       "state" : {
-        "revision" : "5f08181320c444a5a61645ad67cd4f7282f64c5c",
+        "revision" : "e5937986e59120d1a2ea27cffa939f1511721776",
         "version" : "1.0.0"
       }
     },
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/willonboy/ZTStyle",
       "state" : {
-        "revision" : "c2dc02bb278a439c0aa95eeb2ec6f0e8b29fc346",
-        "version" : "2.0.0"
+        "branch" : "main",
+        "revision" : "b70a26846ee6807b3e280f484dabe6fcffccab9e"
       }
     }
   ],

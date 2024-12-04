@@ -423,15 +423,15 @@
 			repositoryURL = "https://github.com/willonboy/ZTChain";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.4;
+				minimumVersion = 1.0.5;
 			};
 		};
 		977A633C2CF2F0CB00C08E46 /* XCRemoteSwiftPackageReference "ZTStyle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/willonboy/ZTStyle";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
