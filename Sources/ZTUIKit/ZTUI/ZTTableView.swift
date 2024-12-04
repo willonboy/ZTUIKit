@@ -29,10 +29,11 @@ public extension UITableView {
     }
     
     func defaultSetting() {
-        separatorStyle      = .none
+        rowHeight           = UITableView.automaticDimension
+        estimatedRowHeight  = 50;
         sectionHeaderHeight = 0
         sectionFooterHeight = 0
-        estimatedRowHeight  = 0;
+        separatorStyle      = .none
         estimatedSectionHeaderHeight = 0;
         estimatedSectionFooterHeight = 0;
         showsVerticalScrollIndicator   = false

@@ -34,4 +34,13 @@ public extension UILabel {
         self.font = font ?? UIFont.systemFont(ofSize: sysFont ?? UIFont.labelFontSize)
         textColor = color ?? UIColor.label
     }
+    
+    convenience init(_ title:NSAttributedString) {
+        self.init()
+        text = nil
+        attributedText = title
+        numberOfLines = 0
+        sizeToFit()
+        textAlignment = .natural
+    }
 }
