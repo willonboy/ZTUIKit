@@ -22,15 +22,28 @@
 
 import UIKit
 import ZTChain
+import ZTGenericBuilder
 
 public extension UICollectionView {
-    func defaultSetting() {
+    @MainActor
+    convenience init<T:UICollectionViewCell>(frame: CGRect = .zero, layout: UICollectionViewLayout, ds:UICollectionViewDataSource? = nil, dl:UICollectionViewDelegate? = nil, @ZTGenericBuilder<T.Type> _ cellCls:() -> [T.Type]) {
+        self.init(frame: frame, collectionViewLayout: layout)
+        dataSource = ds
+        delegate = dl
+        cellCls().forEach {
+            register($0, forCellWithReuseIdentifier: String(describing: $0))
+        }
+    }
+    
+    @MainActor
+    func defSetting() {
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator = false
         contentInset = .zero
         contentInsetAdjustmentBehavior = .never
     }
     
+    @MainActor
     static func verticalFlowLayout(_ itemSize: CGSize) -> UICollectionViewFlowLayout {
         UICollectionViewFlowLayout().zt
             .scrollDirection(.vertical)
@@ -42,6 +55,7 @@ public extension UICollectionView {
             .minimumInteritemSpacing(0).build()
     }
     
+    @MainActor
     static func horizontalFlowLayout(_ itemSize: CGSize) -> UICollectionViewFlowLayout {
         UICollectionViewFlowLayout().zt
             .scrollDirection(.horizontal)
@@ -53,10 +67,14 @@ public extension UICollectionView {
             .minimumInteritemSpacing(0).build()
     }
     
-    func register<T: UICollectionViewCell>(_ cellCls: T.Type) {
-        register(cellCls, forCellWithReuseIdentifier: String(describing: cellCls))
+    @MainActor
+    func register<T: UICollectionViewCell>(@ZTGenericBuilder<T.Type> _ cellCls: () -> [T.Type]) {
+        cellCls().forEach {
+            register($0, forCellWithReuseIdentifier: String(describing: $0))
+        }
     }
     
+    @MainActor
     func dequeueReusableCell<T: UICollectionViewCell>(_ cellCls: T.Type, for indexPath: IndexPath) -> T? {
         dequeueReusableCell(withReuseIdentifier: String(describing: cellCls), for: indexPath) as? T
     }
@@ -66,37 +84,37 @@ public class ZTCollectionView: UICollectionView {
     
     // DataSource blocks
     public var numberOfSectionsBlock: (() -> Int)?
-    public var numberOfItemsInSectionBlock: ((Int) -> Int)?
-    public var cellForItemBlock: ((UICollectionView, IndexPath) -> UICollectionViewCell)?
-    public var supplementaryViewBlock: ((UICollectionView, String, IndexPath) -> UICollectionReusableView)?
-    public var canMoveItemBlock: ((IndexPath) -> Bool)?
-    public var moveItemBlock: ((IndexPath, IndexPath) -> Void)?
+    public var numberOfItemsInSectionBlock: ((_ sec:Int) -> Int)?
+    public var cellForItemBlock: ((_ collectionView:UICollectionView, _ indexPath:IndexPath) -> UICollectionViewCell)?
+    public var supplementaryViewBlock: ((_ collectionView:UICollectionView, _ kind:String, _ indexPath:IndexPath) -> UICollectionReusableView)?
+    public var canMoveItemBlock: ((_ indexPath:IndexPath) -> Bool)?
+    public var moveItemBlock: ((_ fromIndexPath:IndexPath, _ toIndexPath:IndexPath) -> Void)?
     public var indexTitlesBlock: (() -> [String]?)?
-    public var indexPathForIndexTitleBlock: ((String, Int) -> IndexPath)?
+    public var indexPathForIndexTitleBlock: ((_ title:String, _ index:Int) -> IndexPath)?
     
     // Delegate blocks
-    public var shouldSelectItemBlock: ((IndexPath) -> Bool)?
-    public var didSelectItemBlock: ((IndexPath) -> Void)?
-    public var didDeselectItemBlock: ((IndexPath) -> Void)?
-    public var canEditItemBlock: ((IndexPath) -> Bool)?
-    public var willDisplayBlock: ((UICollectionViewCell, IndexPath) -> Void)?
-    public var didDisplayingBlock: ((UICollectionViewCell, IndexPath) -> Void)?
-    public var willDisplaySupplementaryBlock: ((String, IndexPath) -> Void)?
-    public var didDisplayingSupplementaryBlock: ((String, IndexPath) -> Void)?
+    public var shouldSelectItemBlock: ((_ indexPath:IndexPath) -> Bool)?
+    public var didSelectItemBlock: ((_ indexPath:IndexPath) -> Void)?
+    public var didDeselectItemBlock: ((_ indexPath:IndexPath) -> Void)?
+    public var canEditItemBlock: ((_ indexPath:IndexPath) -> Bool)?
+    public var willDisplayBlock: ((_ cell:UICollectionViewCell, _ indexPath:IndexPath) -> Void)?
+    public var didDisplayingBlock: ((_ cell:UICollectionViewCell, _ indexPath:IndexPath) -> Void)?
+    public var willDisplaySupplementaryBlock: ((_ elementKind:String, _ indexPath:IndexPath) -> Void)?
+    public var didDisplayingSupplementaryBlock: ((_ elementKind:String, _ indexPath:IndexPath) -> Void)?
     
     // UICollectionViewDelegateFlowLayout
-    public var sizeForItemBlock: ((UICollectionViewLayout, IndexPath) -> CGSize)?
-    public var insetForSectionBlock: ((UICollectionViewLayout, Int) -> UIEdgeInsets)?
-    public var minimumLineSpacingBlock: ((UICollectionViewLayout, Int) -> CGFloat)?
-    public var minimumInteritemSpacingBlock: ((UICollectionViewLayout, Int) -> CGFloat)?
-    public var referenceSizeForHeaderBlock: ((UICollectionViewLayout, Int) -> CGSize)?
-    public var referenceSizeForFooterBlock: ((UICollectionViewLayout, Int) -> CGSize)?
+    public var sizeForItemBlock: ((_ layout:UICollectionViewLayout, _ indexPath:IndexPath) -> CGSize)?
+    public var insetForSectionBlock: ((_ layout:UICollectionViewLayout, Int) -> UIEdgeInsets)?
+    public var minimumLineSpacingBlock: ((_ layout:UICollectionViewLayout, Int) -> CGFloat)?
+    public var minimumInteritemSpacingBlock: ((_ layout:UICollectionViewLayout, Int) -> CGFloat)?
+    public var referenceSizeForHeaderBlock: ((_ layout:UICollectionViewLayout, Int) -> CGSize)?
+    public var referenceSizeForFooterBlock: ((_ layout:UICollectionViewLayout, Int) -> CGSize)?
     
-    public init(layout: UICollectionViewLayout) {
-        super.init(frame: .zero, collectionViewLayout: layout)
+    public init(_ frame: CGRect = .zero, _ layout: UICollectionViewLayout) {
+        super.init(frame: frame, collectionViewLayout: layout)
         delegate = self
         dataSource = self
-        defaultSetting()
+        defSetting()
     }
     
     required init?(coder: NSCoder) {
