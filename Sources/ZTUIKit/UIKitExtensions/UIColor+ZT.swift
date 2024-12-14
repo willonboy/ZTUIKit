@@ -59,7 +59,7 @@ public extension UIColor {
     }
     
     convenience init?(hex: String, _ alpha: CGFloat = 1.0) {
-        var hexStr = hex.uppercased().trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "#", with: "").replacingOccurrences(of: "0X", with: "")
+        let hexStr = hex.uppercased().trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "#", with: "").replacingOccurrences(of: "0X", with: "")
         if let h = Int(hexStr, radix: 16) {
             self.init(hex: h, alpha)
         } else {

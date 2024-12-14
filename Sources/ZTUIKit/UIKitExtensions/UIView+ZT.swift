@@ -22,6 +22,7 @@
 
 import UIKit
 import ZTChain
+import ZTGenericBuilder
 
 @MainActor
 public extension UIView {
@@ -206,5 +207,37 @@ public extension ZTWrapper where Subject : UIView {
     func onSwipe(_ direction:UISwipeGestureRecognizer.Direction = .right, tapFinger:Int = 1, _ action:@escaping (UIGestureRecognizer, UIView.ZTGestureHandler) -> Void) -> Self {
         subject.onSwipe(direction, action)
         return self
+    }
+}
+
+
+public typealias ZTCALayerBuilder = ZTGenericBuilder<CALayer>
+public extension CALayer {
+    func add(@ZTCALayerBuilder _ layers:() -> [CALayer]) {
+        _ = layers().map { addSublayer($0) }
+    }
+}
+
+public extension CAGradientLayer {
+    convenience init(_ clrs:[UIColor], frame:CGRect = .zero) {
+        self.init()
+        self.frame = frame
+        colors = clrs.map { $0.cgColor }
+    }
+}
+
+public extension UIView {
+    func add(@ZTCALayerBuilder _ layers:() -> [CALayer]) {
+        let ls = layers()
+        // fix self.bounds == .zero when use autolayout
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            _ = ls.map { l in
+                if l.frame == .zero {
+                    l.frame = self.bounds
+                }
+                self.layer.addSublayer(l)
+            }
+        }
     }
 }
