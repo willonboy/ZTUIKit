@@ -54,20 +54,6 @@ For more detailed usage instructions and examples, please refer to the [document
 
 ## Hidden Version
 
-ZTUIKit 提供一个**隐藏版本**，包含一些高级功能，如数据绑定、动画控制等。这些功能大大扩展了 ZTUIKit 的应用场景，使其能够支持更复杂的 UI 需求和交互设计。
-
-### 高级功能包括：
-- **数据绑定**：允许将 UIKit 控件的所有属性与数据模型绑定，自动更新 UI，简化代码。
-- **动画控制**：提供多种内置动画效果，以及自定义动画支持，增强用户交互体验。
-- **其他功能**：包括但不限于复杂布局、视图状态管理、UIKit 与 SwiftUI 的便捷集成等。
-
-### 如何获得授权
-隐藏版本的功能需要单独购买商业授权。请联系 [willonboy@qq.com] 获取详细的授权信息和费用说明。购买授权后，您将获得对隐藏版本功能的访问权限，并可在项目中使用这些高级能力。
-
----
-
-## Hidden Version
-
 ZTUIKit offers a **hidden version** that includes advanced features such as data binding, animation control, and more. These features significantly extend the capabilities of ZTUIKit, allowing it to support more complex UI requirements and interactive designs.
 
 ### Advanced features include:
