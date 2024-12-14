@@ -27,16 +27,6 @@ import ZTGenericBuilder
 public typealias ZTWidgetBuilder = ZTGenericBuilder<any ZTWidgetProtocol>
 
 @MainActor
-@objc public protocol ZTWidgetBaseProtocol : AnyObject {
-    var view: UIView { get }
-}
-extension UIView : ZTWidgetBaseProtocol {
-    public var view: UIView {
-        self
-    }
-}
-
-@MainActor
 public extension UIView {
     private static var zt_subWidgetsKey: UInt8 = 0
     fileprivate var subWidgets: [any ZTWidgetProtocol] {
@@ -64,6 +54,7 @@ public extension UIView {
         add(ws)
     }
     
+    @discardableResult
     func add(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) -> Self {
         let subWidgets = widgets()
         add(subWidgets)
@@ -79,7 +70,7 @@ public extension UIView {
     func removeWidgets(_ widgets: [any ZTWidgetProtocol]) {
         for widget in widgets {
             widget.willBeRemoved()
-            widget.view.removeFromSuperview()
+            widget.removeFromSuperview()
             widget.didRemoved()
             subWidgets.removeAll { $0 === widget }
         }
@@ -88,7 +79,7 @@ public extension UIView {
     func cleanSubWidgets() {
         for widget in subWidgets {
             widget.willBeRemoved()
-            widget.view.removeFromSuperview()
+            widget.removeFromSuperview()
             widget.didRemoved()
         }
         subWidgets.removeAll()
@@ -96,7 +87,7 @@ public extension UIView {
 }
 
 @MainActor
-@objc public protocol ZTWidgetProtocol where Self : ZTWidgetBaseProtocol {
+@objc public protocol ZTWidgetProtocol where Self : UIView {
     @objc func willBeAdded()
     @objc func didAdded()
     @objc func willBeRemoved()
@@ -172,9 +163,9 @@ extension UIView : ZTWidgetProtocol {
         for widget in subWidgets {
             widget.willBeAdded()
             if let stack = self as? UIStackView {
-                stack.addArrangedSubview(widget.view)
+                stack.addArrangedSubview(widget)
             } else {
-                addSubview(widget.view)
+                addSubview(widget)
             }
             widget.didAdded()
             widget.ztRender()

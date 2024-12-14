@@ -37,58 +37,93 @@ public extension UIView {
 
 @MainActor
 public extension ZTWrapper where Subject : UIView {
+    @discardableResult
     func corner(_ r:CGFloat = 0, clips:Bool = false) -> Self {
         subject.layer.cornerRadius = r
         subject.clipsToBounds = clips
         return self
     }
     
+    /// use like corner(8, [.topLeft, .topRight]
+    @discardableResult
+    func corner(_ r:CGFloat, _ c:UIRectCorner, _ sync:Bool = false) -> Self {
+        return corner(CGSize(width: r, height: r), c, sync)
+    }
+    
+    @discardableResult
+    func corner(_ size:CGSize, _ c:UIRectCorner, _ sync:Bool = false) -> Self {
+        let closure = {
+            let path = UIBezierPath (
+                // Note: subject.bounds == .zero when using Auto Layout and executing synchronously
+                roundedRect: subject.bounds,
+                byRoundingCorners: c,
+                cornerRadii: size
+            )
+            subject.layer.mask = CAShapeLayer().zt.path(path.cgPath).build()
+        }
+        if sync {
+            closure()
+        } else {
+            DispatchQueue.main.async {
+                closure()
+            }
+        }
+        return self
+    }
+    
+    @discardableResult
     func maskedCorners(_ m:CACornerMask) -> Self {
         subject.layer.maskedCorners = m
         return self
     }
     
+    @discardableResult
     func cornerCurve(_ c:CALayerCornerCurve) -> Self {
         subject.layer.cornerCurve = c
         return self
     }
     
+    @discardableResult
     func border(_ w:CGFloat = 0, _ c:CGColor? = nil) -> Self {
         subject.layer.borderWidth = w
         subject.layer.borderColor = c
         return self
     }
     
+    @discardableResult
     func opacity(_ o:Float = 1) -> Self {
         subject.layer.opacity = o
         return self
     }
     
+    @discardableResult
     func masksToBounds(_ m:Bool = false) -> Self {
         subject.layer.masksToBounds = m
         return self
     }
     
+    @discardableResult
     func mask(_ m:CALayer? = nil) -> Self {
         subject.layer.mask = m
         return self
     }
     
-    func shadow(_ c:CGColor? = nil, o:Float = 0, s:CGSize = .zero, r:CGFloat = 0, p:CGPath? = nil) -> Self {
-        subject.layer.shadowColor = c
-        subject.layer.shadowOpacity = o
-        subject.layer.shadowOffset = s
-        subject.layer.shadowRadius = r
-        subject.layer.shadowPath = p
+    @discardableResult
+    func shadow(_ color:CGColor? = nil, opacity:Float = 0, offset:CGSize = .zero, radius:CGFloat = 0, _ path:CGPath? = nil) -> Self {
+        subject.layer.shadowColor = color
+        subject.layer.shadowOpacity = opacity
+        subject.layer.shadowOffset = offset
+        subject.layer.shadowRadius = radius
+        subject.layer.shadowPath = path
         return self
     }
     
+    @discardableResult
     func bgColor(_ c:UIColor? = nil) -> Self {
         subject.backgroundColor = c
         return self
     }
 }
-
 
 @MainActor
 public extension UIView {
@@ -210,10 +245,8 @@ public extension ZTWrapper where Subject : UIView {
     }
 }
 
-
-public typealias ZTCALayerBuilder = ZTGenericBuilder<CALayer>
 public extension CALayer {
-    func add(@ZTCALayerBuilder _ layers:() -> [CALayer]) {
+    func add<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
         _ = layers().map { addSublayer($0) }
     }
 }
@@ -227,7 +260,7 @@ public extension CAGradientLayer {
 }
 
 public extension UIView {
-    func add(@ZTCALayerBuilder _ layers:() -> [CALayer]) {
+    func add<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
         let ls = layers()
         // fix self.bounds == .zero when use autolayout
         DispatchQueue.main.async { [weak self] in
