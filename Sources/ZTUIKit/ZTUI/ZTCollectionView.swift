@@ -30,6 +30,7 @@ public extension UICollectionView {
         self.init(frame: frame, collectionViewLayout: layout)
         dataSource = ds
         delegate = dl
+        defSetting()
         cellCls().forEach {
             register($0, forCellWithReuseIdentifier: String(describing: $0))
         }
@@ -117,6 +118,14 @@ public class ZTCollectionView: UICollectionView {
         defSetting()
     }
     
+    @MainActor
+    convenience init<T:UICollectionViewCell>(_ frame: CGRect = .zero, layout: UICollectionViewLayout, @ZTGenericBuilder<T.Type> _ cellCls:() -> [T.Type]) {
+        self.init(frame, layout)
+        cellCls().forEach {
+            register($0, forCellWithReuseIdentifier: String(describing: $0))
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -199,26 +208,67 @@ extension ZTCollectionView: UICollectionViewDelegate {
 // MARK: - UICollectionViewDelegateFlowLayout
 extension ZTCollectionView: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        sizeForItemBlock?(collectionViewLayout, indexPath) ?? CGSize(width: 50, height: 50)
+        if let block = sizeForItemBlock {
+            return block(collectionViewLayout, indexPath)
+        }
+        if let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout {
+            return flowLayout.itemSize
+        }
+        return .zero
     }
     
+    // section 内边距
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        insetForSectionBlock?(collectionViewLayout, section) ?? .zero
+        if let block = insetForSectionBlock {
+            return block(collectionViewLayout, section)
+        }
+        if let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout {
+            return flowLayout.sectionInset
+        }
+        return .zero
     }
     
+    // 行间距
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        minimumLineSpacingBlock?(collectionViewLayout, section) ?? 0
+        if let block = minimumLineSpacingBlock {
+            return block(collectionViewLayout, section)
+        }
+        if let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout {
+            return flowLayout.minimumLineSpacing
+        }
+        return 0
     }
     
+    // 列间距
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        minimumInteritemSpacingBlock?(collectionViewLayout, section) ?? 0
+        if let block = minimumInteritemSpacingBlock {
+            return block(collectionViewLayout, section)
+        }
+        if let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout {
+            return flowLayout.minimumInteritemSpacing
+        }
+        return 0
     }
     
+    // Header 尺寸
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        referenceSizeForHeaderBlock?(collectionViewLayout, section) ?? .zero
+        if let block = referenceSizeForHeaderBlock {
+            return block(collectionViewLayout, section)
+        }
+        if let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout {
+            return flowLayout.headerReferenceSize
+        }
+        return .zero
     }
     
+    // Footer 尺寸
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        referenceSizeForFooterBlock?(collectionViewLayout, section) ?? .zero
+        if let block = referenceSizeForFooterBlock {
+            return block(collectionViewLayout, section)
+        }
+        if let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout {
+            return flowLayout.footerReferenceSize
+        }
+        return .zero
     }
 }
