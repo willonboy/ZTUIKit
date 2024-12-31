@@ -22,53 +22,53 @@
 
 import UIKit
 
-public class ZTPickerView: UIPickerView {
+open class ZTPickerView: UIPickerView {
 
     // DataSource blocks
-    public var numberOfComponentsBlock: (() -> Int)?
-    public var numberOfRowsInComponentBlock: ((Int) -> Int)?
+    open var numberOfComponentsBlock: (() -> Int)?
+    open var numberOfRowsInComponentBlock: ((Int) -> Int)?
     
     // Delegate blocks
-    public var titleForRowBlock: ((Int, Int) -> String?)?
-    public var attributedTitleForRowBlock: ((Int, Int) -> NSAttributedString?)?
-    public var viewForRowBlock: ((Int, Int, UIView?) -> UIView?)?
-    public var widthForComponentBlock: ((Int) -> CGFloat)?
-    public var rowHeightForComponentBlock: ((Int) -> CGFloat)?
-    public var didSelectRowBlock: ((Int, Int) -> Void)?
+    open var titleForRowBlock: ((Int, Int) -> String?)?
+    open var attributedTitleForRowBlock: ((Int, Int) -> NSAttributedString?)?
+    open var viewForRowBlock: ((Int, Int, UIView?) -> UIView?)?
+    open var widthForComponentBlock: ((Int) -> CGFloat)?
+    open var rowHeightForComponentBlock: ((Int) -> CGFloat)?
+    open var didSelectRowBlock: ((Int, Int) -> Void)?
     
-    override public init(frame: CGRect = .zero) {
+    public override init(frame: CGRect = .zero) {
         super.init(frame: frame)
         delegate = self
         dataSource = self
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 extension ZTPickerView: UIPickerViewDataSource {
     
-    public func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    open func numberOfComponents(in pickerView: UIPickerView) -> Int {
         numberOfComponentsBlock?() ?? 1
     }
     
-    public func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    open func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         numberOfRowsInComponentBlock?(component) ?? 0
     }
 }
 
 extension ZTPickerView: UIPickerViewDelegate {
     
-    public func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    open func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         titleForRowBlock?(row, component)
     }
     
-    public func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+    open func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         attributedTitleForRowBlock?(row, component)
     }
     
-    public func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+    open func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         if let customView = viewForRowBlock?(row, component, view) {
             return customView
         }
@@ -86,15 +86,15 @@ extension ZTPickerView: UIPickerViewDelegate {
         return label
     }
     
-    public func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+    open func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
         widthForComponentBlock?(component) ?? 0
     }
     
-    public func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+    open func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
         rowHeightForComponentBlock?(component) ?? 0
     }
     
-    public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    open func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         didSelectRowBlock?(row, component)
     }
 }

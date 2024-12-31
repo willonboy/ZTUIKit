@@ -22,51 +22,51 @@
 
 import UIKit
 
-public class ZTTextField: UITextField {
-    public var onShouldBeginEditingBlock: (() -> Bool)?
-    public var onDidBeginEditingBlock: (() -> Void)?
-    public var onShouldEndEditingBlock: (() -> Bool)?
-    public var onDidEndEditingBlock: (() -> Void)?
-    public var onShouldChangeCharactersBlock: ((NSRange, String) -> Bool)?
-    public var onShouldClearBlock: (() -> Bool)?
-    public var onShouldReturnBlock: (() -> Bool)?
+open class ZTTextField: UITextField {
+    open var onShouldBeginEditingBlock: (() -> Bool)?
+    open var onDidBeginEditingBlock: (() -> Void)?
+    open var onShouldEndEditingBlock: (() -> Bool)?
+    open var onDidEndEditingBlock: (() -> Void)?
+    open var onShouldChangeCharactersBlock: ((NSRange, String) -> Bool)?
+    open var onShouldClearBlock: (() -> Bool)?
+    open var onShouldReturnBlock: (() -> Bool)?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
         delegate = self
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 extension ZTTextField: UITextFieldDelegate {
-    public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+    open func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         onShouldBeginEditingBlock?() ?? true
     }
     
-    public func textFieldDidBeginEditing(_ textField: UITextField) {
+    open func textFieldDidBeginEditing(_ textField: UITextField) {
         onDidBeginEditingBlock?()
     }
     
-    public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+    open func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         onShouldEndEditingBlock?() ?? true
     }
     
-    public func textFieldDidEndEditing(_ textField: UITextField) {
+    open func textFieldDidEndEditing(_ textField: UITextField) {
         onDidEndEditingBlock?()
     }
     
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    open func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         onShouldChangeCharactersBlock?(range, string) ?? true
     }
     
-    public func textFieldShouldClear(_ textField: UITextField) -> Bool {
+    open func textFieldShouldClear(_ textField: UITextField) -> Bool {
         onShouldClearBlock?() ?? true
     }
     
-    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    open func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         onShouldReturnBlock?() ?? true
     }
 }

@@ -73,42 +73,42 @@ public extension UITableView {
 
 
 
-public class ZTTableView: UITableView {
+open class ZTTableView: UITableView {
     // DataSource blocks
-    public var titleForHeaderInSectionBlock: ((_ sec:Int) -> String?)?
-    public var titleForFooterInSectionBlock: ((_ sec:Int) -> String?)?
-    public var numberOfSectionsBlock: (() -> Int)?
-    public var numberOfRowsBlock: ((_ sec:Int) -> Int)?
-    public var cellForRowBlock: ((_ tableView:UITableView, _ indexPath:IndexPath) -> UITableViewCell)?
-    public var sectionIndexTitlesBlock: (() -> [String]?)?
-    public var sectionForSectionIndexTitleBlock: ((_ title:String, _ index:Int) -> Int)?
-    public var canEditRowBlock: ((_ indexPath:IndexPath) -> Bool)?
-    public var canMoveRowBlock: ((_ indexPath:IndexPath) -> Bool)?
-    public var commitEditingStyleBlock: ((_ editingStyle:UITableViewCell.EditingStyle, _ indexPath:IndexPath) -> Void)?
-    public var moveRowBlock: ((_ fromIndexPath:IndexPath, _ toIndexPath:IndexPath) -> Void)?
+    open var titleForHeaderInSectionBlock: ((_ sec:Int) -> String?)?
+    open var titleForFooterInSectionBlock: ((_ sec:Int) -> String?)?
+    open var numberOfSectionsBlock: (() -> Int)?
+    open var numberOfRowsBlock: ((_ sec:Int) -> Int)?
+    open var cellForRowBlock: ((_ tableView:UITableView, _ indexPath:IndexPath) -> UITableViewCell)?
+    open var sectionIndexTitlesBlock: (() -> [String]?)?
+    open var sectionForSectionIndexTitleBlock: ((_ title:String, _ index:Int) -> Int)?
+    open var canEditRowBlock: ((_ indexPath:IndexPath) -> Bool)?
+    open var canMoveRowBlock: ((_ indexPath:IndexPath) -> Bool)?
+    open var commitEditingStyleBlock: ((_ editingStyle:UITableViewCell.EditingStyle, _ indexPath:IndexPath) -> Void)?
+    open var moveRowBlock: ((_ fromIndexPath:IndexPath, _ toIndexPath:IndexPath) -> Void)?
     
     // Delegate blocks
-    public var willDisplayCellBlock: ((_ cell:UITableViewCell, _ indexPath:IndexPath) -> Void)?
-    public var willDisplayHeaderViewBlock: ((_ header:UIView, _ sec:Int) -> Void)?
-    public var willDisplayFooterViewBlock: ((_ footer:UIView, _ sec:Int) -> Void)?
-    public var didEndDisplayingCellBlock: ((_ cell:UITableViewCell, _ indexPath:IndexPath) -> Void)?
-    public var didEndDisplayingHeaderViewBlock: ((_ header:UIView, _ sec:Int) -> Void)?
-    public var didEndDisplayingFooterViewBlock: ((_ footer:UIView, _ sec:Int) -> Void)?
-    public var heightForRowBlock: ((_ indexPath:IndexPath) -> CGFloat)?
-    public var heightForSectionHeaderBlock: ((_ sec:Int) -> CGFloat)?
-    public var heightForSectionFooterBlock: ((_ sec:Int) -> CGFloat)?
-    public var estimatedHeightForRowBlock: ((_ indexPath:IndexPath) -> CGFloat)?
-    public var estimatedHeightForHeaderBlock: ((_ sec:Int) -> CGFloat)?
-    public var estimatedHeightForFooterBlock: ((_ sec:Int) -> CGFloat)?
-    public var viewForHeaderBlock: ((_ sec:Int) -> UIView?)?
-    public var viewForFooterBlock: ((_ sec:Int) -> UIView?)?
-    public var shouldHighlightRowBlock: ((_ indexPath:IndexPath) -> Bool)?
-    public var didHighlightRowBlock: ((_ indexPath:IndexPath) -> Void)?
-    public var didUnhighlightRowBlock: ((_ indexPath:IndexPath) -> Void)?
-    public var willSelectRowBlock: ((_ indexPath:IndexPath) -> IndexPath?)?
-    public var willDeselectRowBlock: ((_ indexPath:IndexPath) -> IndexPath?)?
-    public var didSelectRowBlock: ((_ indexPath:IndexPath) -> Void)?
-    public var didDeselectRowBlock: ((_ indexPath:IndexPath) -> Void)?
+    open var willDisplayCellBlock: ((_ cell:UITableViewCell, _ indexPath:IndexPath) -> Void)?
+    open var willDisplayHeaderViewBlock: ((_ header:UIView, _ sec:Int) -> Void)?
+    open var willDisplayFooterViewBlock: ((_ footer:UIView, _ sec:Int) -> Void)?
+    open var didEndDisplayingCellBlock: ((_ cell:UITableViewCell, _ indexPath:IndexPath) -> Void)?
+    open var didEndDisplayingHeaderViewBlock: ((_ header:UIView, _ sec:Int) -> Void)?
+    open var didEndDisplayingFooterViewBlock: ((_ footer:UIView, _ sec:Int) -> Void)?
+    open var heightForRowBlock: ((_ indexPath:IndexPath) -> CGFloat)?
+    open var heightForSectionHeaderBlock: ((_ sec:Int) -> CGFloat)?
+    open var heightForSectionFooterBlock: ((_ sec:Int) -> CGFloat)?
+    open var estimatedHeightForRowBlock: ((_ indexPath:IndexPath) -> CGFloat)?
+    open var estimatedHeightForHeaderBlock: ((_ sec:Int) -> CGFloat)?
+    open var estimatedHeightForFooterBlock: ((_ sec:Int) -> CGFloat)?
+    open var viewForHeaderBlock: ((_ sec:Int) -> UIView?)?
+    open var viewForFooterBlock: ((_ sec:Int) -> UIView?)?
+    open var shouldHighlightRowBlock: ((_ indexPath:IndexPath) -> Bool)?
+    open var didHighlightRowBlock: ((_ indexPath:IndexPath) -> Void)?
+    open var didUnhighlightRowBlock: ((_ indexPath:IndexPath) -> Void)?
+    open var willSelectRowBlock: ((_ indexPath:IndexPath) -> IndexPath?)?
+    open var willDeselectRowBlock: ((_ indexPath:IndexPath) -> IndexPath?)?
+    open var didSelectRowBlock: ((_ indexPath:IndexPath) -> Void)?
+    open var didDeselectRowBlock: ((_ indexPath:IndexPath) -> Void)?
     
     public init(_ frame: CGRect = .zero, style: UITableView.Style = .plain) {
         super.init(frame: frame, style: style)
@@ -124,46 +124,46 @@ public class ZTTableView: UITableView {
         }
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 extension ZTTableView: UITableViewDataSource {
 
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         numberOfRowsBlock?(section) ?? 0
     }
 
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         cellForRowBlock?(tableView, indexPath) ?? UITableViewCell()
     }
     
-    public func numberOfSections(in tableView: UITableView) -> Int {
+    open func numberOfSections(in tableView: UITableView) -> Int {
         numberOfSectionsBlock?() ?? 1
     }
 
-    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    open func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         titleForHeaderInSectionBlock?(section)
     }
 
-    public func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    open func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         titleForFooterInSectionBlock?(section)
     }
 
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    open func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         canEditRowBlock?(indexPath) ?? false
     }
 
-    public func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+    open func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         canMoveRowBlock?(indexPath) ?? false
     }
     
-    public func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+    open func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         sectionIndexTitlesBlock?()
     }
 
-    public func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+    open func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
         if let sectionForSectionIndexTitleBlock = sectionForSectionIndexTitleBlock {
             return sectionForSectionIndexTitleBlock(title, index)
         } else {
@@ -174,98 +174,98 @@ extension ZTTableView: UITableViewDataSource {
         }
     }
 
-    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         commitEditingStyleBlock?(editingStyle, indexPath)
     }
 
-    public func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         moveRowBlock?(sourceIndexPath, destinationIndexPath)
     }
 }
 
 
 extension ZTTableView: UITableViewDelegate {
-    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         willDisplayCellBlock?(cell, indexPath)
     }
 
-    public func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    open func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         willDisplayHeaderViewBlock?(view, section)
     }
     
-    public func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+    open func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         willDisplayFooterViewBlock?(view, section)
     }
     
-    public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         didEndDisplayingCellBlock?(cell, indexPath)
     }
 
-    public func tableView(_ tableView: UITableView, didEndDisplayingHeaderView view: UIView, forSection section: Int) {
+    open func tableView(_ tableView: UITableView, didEndDisplayingHeaderView view: UIView, forSection section: Int) {
         didEndDisplayingHeaderViewBlock?(view, section)
     }
     
-    public func tableView(_ tableView: UITableView, didEndDisplayingFooterView view: UIView, forSection section: Int) {
+    open func tableView(_ tableView: UITableView, didEndDisplayingFooterView view: UIView, forSection section: Int) {
         didEndDisplayingFooterViewBlock?(view, section)
     }
     
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         heightForRowBlock?(indexPath) ?? self.rowHeight
     }
 
-    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         heightForSectionHeaderBlock?(section) ?? self.sectionHeaderHeight
     }
 
-    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         heightForSectionFooterBlock?(section) ?? self.sectionFooterHeight
     }
 
-    public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    open func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         estimatedHeightForRowBlock?(indexPath) ?? self.estimatedRowHeight
     }
 
-    public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+    open func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
         estimatedHeightForHeaderBlock?(section) ?? self.estimatedSectionHeaderHeight
     }
 
-    public func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
+    open func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
         estimatedHeightForFooterBlock?(section) ?? self.estimatedSectionFooterHeight
     }
 
-    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         viewForHeaderBlock?(section)
     }
 
-    public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         viewForFooterBlock?(section)
     }
     
-    public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+    open func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         shouldHighlightRowBlock?(indexPath) ?? true
     }
 
-    public func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
         didHighlightRowBlock?(indexPath)
     }
     
-    public func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
         didUnhighlightRowBlock?(indexPath)
     }
     
-    public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+    open func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         willSelectRowBlock?(indexPath) ?? indexPath
     }
     
-    public func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
+    open func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
         willDeselectRowBlock?(indexPath) ?? indexPath
     }
     
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         didSelectRowBlock?(indexPath)
     }
 
-    public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         didDeselectRowBlock?(indexPath)
     }
 }

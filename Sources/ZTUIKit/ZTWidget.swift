@@ -67,6 +67,14 @@ public extension UIView {
         }
     }
     
+    func bacground(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) -> Self {
+        let widgets = widgets()
+        for widget in widgets.reversed() {
+            subWidgets.insert(widget, at: 0)
+        }
+        return self
+    }
+    
     func removeWidgets(_ widgets: [any ZTWidgetProtocol]) {
         for widget in widgets {
             widget.willBeRemoved()
@@ -153,11 +161,11 @@ extension UIView : ZTWidgetProtocol {
     }
     
     /// Note: A custom subclass of UIView must call these blocks itself.
-    public func willBeAdded() { onWillBeAddedBlock?(self) }
-    public func didAdded() { onDidAddedBlock?(self) }
-    public func willBeRemoved() { onWillBeRemovedBlock?(self) }
-    public func didRemoved() { onDidRemovedBlock?(self) }
-    public func ztRender() {
+    open func willBeAdded() { onWillBeAddedBlock?(self) }
+    open func didAdded() { onDidAddedBlock?(self) }
+    open func willBeRemoved() { onWillBeRemovedBlock?(self) }
+    open func didRemoved() { onDidRemovedBlock?(self) }
+    open func ztRender() {
         onWillRenderBlock?(self)
         bindConstraints()
         for widget in subWidgets {
@@ -179,7 +187,7 @@ extension UIView {
     
     @MainActor
     func zt_find(_ domId:String) -> UIView? {
-        // Only query one level down.
+        // Query the descendants. Only query one level down.
         if let weakBox = self.domIdMap[domId], let v = weakBox.value {
             return v
         }
@@ -299,7 +307,7 @@ open class ZTVStack: UIStackView {
 }
 
 @MainActor
-public class ZTSpacer : UIView {
+open class ZTSpacer : UIView {
     public enum Axis {
         case h, v
     }
@@ -312,7 +320,9 @@ public class ZTSpacer : UIView {
                 setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             } else {
                 super.init(frame:CGRectMake(0, 0, spacing, 1))
-                widthAnchor.constraint(equalToConstant: spacing).isActive = true
+                let wc = widthAnchor.constraint(equalToConstant: spacing)
+                wc.priority = .required
+                wc.isActive = true
             }
         } else {
             if abs(spacing) < 0.001 {
@@ -321,13 +331,15 @@ public class ZTSpacer : UIView {
                 setContentCompressionResistancePriority(.defaultLow, for: .vertical)
             } else {
                 super.init(frame:CGRectMake(0, 0, 1, spacing))
-                heightAnchor.constraint(equalToConstant: spacing).isActive = true
+                let hc = heightAnchor.constraint(equalToConstant: spacing)
+                hc.priority = .required
+                hc.isActive = true
             }
         }
         translatesAutoresizingMaskIntoConstraints = false
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

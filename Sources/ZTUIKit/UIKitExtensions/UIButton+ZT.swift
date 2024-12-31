@@ -48,7 +48,6 @@ public extension UIButton {
     convenience init(_ title:String? = nil, sysFont:CGFloat? = nil, font:UIFont? = nil, color:UIColor? = nil, img:UIImage? = nil, bgImg:UIImage? = nil, _ onClick:((UIButton) -> Void)? = nil) {
         self.init(type:.custom)
         self.onClick = onClick
-        addTarget(self, action: #selector(onClickHandle), for: .touchUpInside)
         
         setTitle(title, for: .normal)
         setImage(img, for: .normal)
@@ -66,6 +65,8 @@ public extension UIButton {
             return objc_getAssociatedObject(self, &Self.zt_onClickClosureKey) as? ((UIButton) -> Void)
         }
         set {
+            removeTarget(self, action: #selector(onClickHandle), for: .touchUpInside)
+            addTarget(self, action: #selector(onClickHandle), for: .touchUpInside)
             objc_setAssociatedObject(self, &Self.zt_onClickClosureKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
@@ -134,7 +135,7 @@ public extension ZTWrapper where Subject : UIButton {
 public extension ZTWrapper where Subject : UIButton {
     @MainActor
     @discardableResult
-    func onClick(_ action:@escaping (UIButton)->Void) -> Self {
+    func onClick(_ action:@escaping (_ b:UIButton) -> Void) -> Self {
         subject.onClick = action
         return self
     }

@@ -250,6 +250,10 @@ public extension CALayer {
     func add<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
         _ = layers().map { addSublayer($0) }
     }
+    
+    func insert<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
+        _ = layers().reversed().map { insertSublayer($0, at: 0) }
+    }
 }
 
 public extension CAGradientLayer {
@@ -273,5 +277,32 @@ public extension UIView {
                 self.layer.addSublayer(l)
             }
         }
+    }
+    
+    func insert<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
+        let ls = layers()
+        // fix self.bounds == .zero when use autolayout
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            _ = ls.reversed().map { l in
+                if l.frame == .zero {
+                    l.frame = self.bounds
+                }
+                self.layer.insertSublayer(l, at: 0)
+            }
+        }
+    }
+}
+
+@MainActor
+public extension ZTWrapper where Subject : UIView {
+    func add<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) -> Self {
+        subject.add(layers)
+        return self
+    }
+    
+    func insert<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) -> Self {
+        subject.insert(layers)
+        return self
     }
 }
