@@ -52,14 +52,15 @@ public extension ZTWrapper where Subject : UIView {
     
     @discardableResult
     func corner(_ size:CGSize, _ c:UIRectCorner, _ sync:Bool = false) -> Self {
-        let closure = {
+        let closure = { [weak v = self.subject] in
+            guard let v else { return }
             let path = UIBezierPath (
                 // Note: subject.bounds == .zero when using Auto Layout and executing synchronously
-                roundedRect: subject.bounds,
+                roundedRect: v.bounds,
                 byRoundingCorners: c,
                 cornerRadii: size
             )
-            subject.layer.mask = CAShapeLayer().zt.path(path.cgPath).build()
+            v.layer.mask = CAShapeLayer().zt.path(path.cgPath).build()
         }
         if sync {
             closure()
@@ -104,7 +105,28 @@ public extension ZTWrapper where Subject : UIView {
     
     @discardableResult
     func mask(_ m:CALayer? = nil) -> Self {
-        subject.layer.mask = m
+        if let m, m.frame == .zero {
+            DispatchQueue.main.async { [weak v = subject] in
+                guard let v else { return }
+                m.frame = v.bounds
+                v.layer.mask = m
+            }
+        } else {
+            subject.layer.mask = m
+        }
+        return self
+    }
+    
+    @discardableResult
+    func gradient(_ clrs:[UIColor], frame:CGRect = .zero,
+                  startPoint:CGPoint = .init(x: 1, y: 0),
+                  endPoint:CGPoint = .init(x: 1, y: 1)) -> Self {
+        subject.addLayers {
+            CAGradientLayer(clrs, frame: frame).zt
+                .startPoint(startPoint)
+                .endPoint(endPoint)
+                .build()
+        }
         return self
     }
     
@@ -265,11 +287,11 @@ public extension CAGradientLayer {
 }
 
 public extension UIView {
-    func add<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
+    func addLayers<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
         let ls = layers()
         // fix self.bounds == .zero when use autolayout
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             _ = ls.map { l in
                 if l.frame == .zero {
                     l.frame = self.bounds
@@ -279,11 +301,11 @@ public extension UIView {
         }
     }
     
-    func insert<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
+    func insertLayers<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
         let ls = layers()
         // fix self.bounds == .zero when use autolayout
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             _ = ls.reversed().map { l in
                 if l.frame == .zero {
                     l.frame = self.bounds
@@ -296,13 +318,13 @@ public extension UIView {
 
 @MainActor
 public extension ZTWrapper where Subject : UIView {
-    func add<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) -> Self {
-        subject.add(layers)
+    func addLayers<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) -> Self {
+        subject.addLayers(layers)
         return self
     }
     
-    func insert<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) -> Self {
-        subject.insert(layers)
+    func insertLayers<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) -> Self {
+        subject.insertLayers(layers)
         return self
     }
 }

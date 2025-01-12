@@ -111,7 +111,7 @@ extension UIView : ZTWidgetProtocol {
     private static var zt_onDidRemovedClosuresKey: UInt8 = 0
     private static var zt_onWillRenderClosuresKey: UInt8 = 0
     private static var zt_onDidRenderClosuresKey: UInt8 = 0
-    public var onWillBeAddedBlock: ((_ v:UIView)->Void)? {
+    public var onWillBeAdded: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onWillBeAddedClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -119,7 +119,7 @@ extension UIView : ZTWidgetProtocol {
             objc_setAssociatedObject(self, &Self.zt_onWillBeAddedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var onDidAddedBlock: ((_ v:UIView)->Void)? {
+    public var onDidAdded: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onDidAddedClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -127,7 +127,7 @@ extension UIView : ZTWidgetProtocol {
             objc_setAssociatedObject(self, &Self.zt_onDidAddedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var onWillBeRemovedBlock: ((_ v:UIView)->Void)? {
+    public var onWillBeRemoved: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onWillBeRemovedClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -135,7 +135,7 @@ extension UIView : ZTWidgetProtocol {
             objc_setAssociatedObject(self, &Self.zt_onWillBeRemovedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var onDidRemovedBlock: ((_ v:UIView)->Void)? {
+    public var onDidRemoved: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onDidRemovedClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -143,7 +143,7 @@ extension UIView : ZTWidgetProtocol {
             objc_setAssociatedObject(self, &Self.zt_onDidRemovedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var onWillRenderBlock: ((_ v:UIView)->Void)? {
+    public var onWillRender: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onWillRenderClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -151,7 +151,7 @@ extension UIView : ZTWidgetProtocol {
             objc_setAssociatedObject(self, &Self.zt_onWillRenderClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var onDidRenderBlock: ((_ v:UIView)->Void)? {
+    public var onDidRender: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onDidRenderClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -160,13 +160,13 @@ extension UIView : ZTWidgetProtocol {
         }
     }
     
-    /// Note: A custom subclass of UIView must call these blocks itself.
-    open func willBeAdded() { onWillBeAddedBlock?(self) }
-    open func didAdded() { onDidAddedBlock?(self) }
-    open func willBeRemoved() { onWillBeRemovedBlock?(self) }
-    open func didRemoved() { onDidRemovedBlock?(self) }
+    /// Note: A custom subclass of UIView must call these closures itself.
+    open func willBeAdded() { onWillBeAdded?(self) }
+    open func didAdded() { _ = domId; onDidAdded?(self) }
+    open func willBeRemoved() { onWillBeRemoved?(self) }
+    open func didRemoved() { onDidRemoved?(self) }
     open func ztRender() {
-        onWillRenderBlock?(self)
+        onWillRender?(self)
         bindConstraints()
         for widget in subWidgets {
             widget.willBeAdded()
@@ -178,7 +178,7 @@ extension UIView : ZTWidgetProtocol {
             widget.didAdded()
             widget.ztRender()
         }
-        onDidRenderBlock?(self)
+        onDidRender?(self)
     }
 }
 
@@ -188,10 +188,10 @@ extension UIView {
     @MainActor
     func zt_find(_ domId:String) -> UIView? {
         // Query the descendants. Only query one level down.
-        if let weakBox = self.domIdMap[domId], let v = weakBox.value {
+        if let weakBox = self.domIdMap[domId], let v = weakBox.value, v.superview != nil {
             return v
         }
-        if let v = subviews.first(where: { $0.domId == domId }) {
+        if let v = subviews.first(where: { $0.domId == domId }), v.superview != nil {
             return v
         }
 #if DEBUG
@@ -201,10 +201,10 @@ extension UIView {
         // Only query the views of the immediate ancestral-level relationships upwards.
         var s = superview
         repeat {
-            if let weakBox = s?.domIdMap[domId], let v = weakBox.value {
+            if let weakBox = s?.domIdMap[domId], let v = weakBox.value, v.superview != nil {
                 return v
             }
-            if let v = s?.subviews.first(where: { $0.domId == domId }) {
+            if let v = s?.subviews.first(where: { $0.domId == domId }), v.superview != nil {
                 return v
             }
             s = s?.superview
@@ -355,6 +355,12 @@ public extension ZTWrapper where Subject: UIView {
     @discardableResult
     func addTo(_ superview:UIView) -> Self {
         superview.addSubview(subject)
+        return self
+    }
+    
+    @discardableResult
+    func add(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) -> Self {
+        subject.add(widgets)
         return self
     }
 }
