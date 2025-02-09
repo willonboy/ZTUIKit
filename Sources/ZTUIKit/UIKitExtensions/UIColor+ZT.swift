@@ -66,5 +66,10 @@ public extension UIColor {
             self.init(red: 1, green: 0, blue: 0, alpha: 1)
         }
     }
+    
+    func alpha(_ a:CGFloat) {
+        self.withAlphaComponent(a)
+    }
+    
 }
 

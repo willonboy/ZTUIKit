@@ -54,9 +54,9 @@ public extension ZTWrapper where Subject: UIView {
     
     @MainActor
     @discardableResult
-    func remakeStevia(_ closure: @escaping ZTSteviaLayoutClosure) -> Self {
+    func remakeStevia(_ closure: ZTSteviaLayoutClosure) -> Self {
         removeStevia()
-        closure(self.subject, self.subject.zt_find)
+        closure(self.subject, self.subject.zt_findOneLevelDownAndAncestorsByDomId)
         return self
     }
     

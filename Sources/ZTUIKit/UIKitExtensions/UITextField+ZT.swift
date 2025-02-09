@@ -33,3 +33,152 @@ public extension UITextField {
         textColor = color ?? UIColor.label
     }
 }
+
+@MainActor
+public extension UITextField {
+    @MainActor 
+    private struct AssociatedKeys {
+        static var onShouldBeginEditingBlock = "onShouldBeginEditingBlock"
+        static var onDidBeginEditingBlock = "onDidBeginEditingBlock"
+        static var onShouldEndEditingBlock = "onShouldEndEditingBlock"
+        static var onDidEndEditingBlock = "onDidEndEditingBlock"
+        static var onShouldChangeCharactersBlock = "onShouldChangeCharactersBlock"
+        static var onShouldClearBlock = "onShouldClearBlock"
+        static var onShouldReturnBlock = "onShouldReturnBlock"
+    }
+
+    var onShouldBeginEditingBlock: ((_ tf: UITextField) -> Bool)? {
+        get {
+            withUnsafePointer(to: &AssociatedKeys.onShouldBeginEditingBlock) { pointer in
+                objc_getAssociatedObject(self, pointer) as? ((_ tf: UITextField) -> Bool)
+            }
+        }
+        set {
+            withUnsafePointer(to: &AssociatedKeys.onShouldBeginEditingBlock) { pointer in
+                objc_setAssociatedObject(self, pointer, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+            }
+            ensureDelegate()
+        }
+    }
+
+    var onDidBeginEditingBlock: ((_ tf: UITextField) -> Void)? {
+        get {
+            withUnsafePointer(to: &AssociatedKeys.onDidBeginEditingBlock) { pointer in
+                objc_getAssociatedObject(self, pointer) as? ((_ tf: UITextField) -> Void)
+            }
+        }
+        set {
+            withUnsafePointer(to: &AssociatedKeys.onDidBeginEditingBlock) { pointer in
+                objc_setAssociatedObject(self, pointer, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+            }
+            ensureDelegate()
+        }
+    }
+
+    var onShouldEndEditingBlock: ((_ tf: UITextField) -> Bool)? {
+        get {
+            withUnsafePointer(to: &AssociatedKeys.onShouldEndEditingBlock) { pointer in
+                objc_getAssociatedObject(self, pointer) as? ((_ tf: UITextField) -> Bool)
+            }
+        }
+        set {
+            withUnsafePointer(to: &AssociatedKeys.onShouldEndEditingBlock) { pointer in
+                objc_setAssociatedObject(self, pointer, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+            }
+            ensureDelegate()
+        }
+    }
+
+    var onDidEndEditingBlock: ((_ tf: UITextField) -> Void)? {
+        get {
+            withUnsafePointer(to: &AssociatedKeys.onDidEndEditingBlock) { pointer in
+                objc_getAssociatedObject(self, pointer) as? ((_ tf: UITextField) -> Void)
+            }
+        }
+        set {
+            withUnsafePointer(to: &AssociatedKeys.onDidEndEditingBlock) { pointer in
+                objc_setAssociatedObject(self, pointer, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+            }
+            ensureDelegate()
+        }
+    }
+
+    var onShouldChangeCharactersBlock: ((_ tf: UITextField, _ range: NSRange, _ str: String) -> Bool)? {
+        get {
+            withUnsafePointer(to: &AssociatedKeys.onShouldChangeCharactersBlock) { pointer in
+                objc_getAssociatedObject(self, pointer) as? ((_ tf: UITextField, _ range: NSRange, _ str: String) -> Bool)
+            }
+        }
+        set {
+            withUnsafePointer(to: &AssociatedKeys.onShouldChangeCharactersBlock) { pointer in
+                objc_setAssociatedObject(self, pointer, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+            }
+            ensureDelegate()
+        }
+    }
+
+    var onShouldClearBlock: ((_ tf: UITextField) -> Bool)? {
+        get {
+            withUnsafePointer(to: &AssociatedKeys.onShouldClearBlock) { pointer in
+                objc_getAssociatedObject(self, pointer) as? ((_ tf: UITextField) -> Bool)
+            }
+        }
+        set {
+            withUnsafePointer(to: &AssociatedKeys.onShouldClearBlock) { pointer in
+                objc_setAssociatedObject(self, pointer, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+            }
+            ensureDelegate()
+        }
+    }
+
+    var onShouldReturnBlock: ((_ tf: UITextField) -> Bool)? {
+        get {
+            withUnsafePointer(to: &AssociatedKeys.onShouldReturnBlock) { pointer in
+                objc_getAssociatedObject(self, pointer) as? ((_ tf: UITextField) -> Bool)
+            }
+        }
+        set {
+            withUnsafePointer(to: &AssociatedKeys.onShouldReturnBlock) { pointer in
+                objc_setAssociatedObject(self, pointer, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+            }
+            ensureDelegate()
+        }
+    }
+
+    func ensureDelegate() {
+        if delegate !== self {
+            delegate = self
+        }
+    }
+}
+
+extension UITextField: UITextFieldDelegate {
+    public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        onShouldBeginEditingBlock?(textField) ?? true
+    }
+
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        onDidBeginEditingBlock?(textField)
+    }
+
+    public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        onShouldEndEditingBlock?(textField) ?? true
+    }
+
+    public func textFieldDidEndEditing(_ textField: UITextField) {
+        onDidEndEditingBlock?(textField)
+    }
+
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        onShouldChangeCharactersBlock?(textField, range, string) ?? true
+    }
+
+    public func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        onShouldClearBlock?(textField) ?? true
+    }
+
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        onShouldReturnBlock?(textField) ?? true
+    }
+}
+
