@@ -20,7 +20,6 @@
 //
 
 
-
 import UIKit
 import ZTChain
 
@@ -53,18 +52,18 @@ public extension ZTWrapper where Subject: UIView {
     
     @MainActor
     @discardableResult
-    func remakeSnapkit(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
+    func remakeSnapkit(_ closure: @escaping ZTSnapkitLayoutClosure) -> Self {
         self.subject.snp.remakeConstraints { make in
-            closure(make)
+            closure(make, self.subject.zt_find)
         }
         return self
     }
     
     @MainActor
     @discardableResult
-    func updateSnapkit(_ closure: (_ make: ConstraintMaker) -> Void) -> Self {
+    func updateSnapkit(_ closure: @escaping ZTSnapkitLayoutClosure) -> Self {
         self.subject.snp.updateConstraints { make in
-            closure(make)
+            closure(make, self.subject.zt_find)
         }
         return self
     }

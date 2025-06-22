@@ -22,14 +22,11 @@
 
 import UIKit
 
-public extension UIFont {
-    convenience init(_ size:Int) {
-        self.init()
-        
-    }
-    
-    @discardableResult
-    static func callAsFunction(_ size: CGFloat) -> UIFont {
-        systemFont(ofSize: size)
+public extension UIDevice {
+    static var isNotchScreen:Bool {
+        guard current.userInterfaceIdiom == .phone else {
+            return false
+        }
+        return UIApplication.shared.ztKeyWindow.safeAreaInsets.bottom > 0.0
     }
 }

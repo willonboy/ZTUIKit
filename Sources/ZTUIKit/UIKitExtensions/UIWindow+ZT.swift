@@ -23,7 +23,7 @@
 import UIKit
 
 public extension UIWindow {
-    convenience init(_ key:Bool = true, visable:Bool = true, @ZTVCBuilder _ rootVC: () -> UIViewController) {
+    convenience init<T:UIViewController>(_ key:Bool = true, visable:Bool, @ZTGenericBuilder<T> _ rootVC: () -> T) {
         self.init(frame: UIScreen.main.bounds)
         rootViewController = rootVC()
         backgroundColor = .white
@@ -34,11 +34,11 @@ public extension UIWindow {
         }
     }
     
-    func alert(title:String = "", msg:String = "", animated:Bool = true, _ completion: (() -> Void)? = nil, @ZTAlertItemBuilder _ actions:() -> [any ZTAlertItemProtocol]) {
+    func alert<T:UIAlertAction>(title:String = "", msg:String = "", animated:Bool = true, _ completion: (() -> Void)? = nil, @ZTGenericBuilder<T> _ actions:() -> [T]) {
         rootViewController?.alert(title: title, msg: msg, animated: animated, completion: completion, actions: actions)
     }
     
-    func showSheet(title:String = "", msg:String = "", animated:Bool = true, _ completion: (() -> Void)? = nil, @ZTAlertItemBuilder _ actions:() -> [any ZTAlertItemProtocol]) {
+    func showSheet<T:UIAlertAction>(title:String = "", msg:String = "", animated:Bool = true, _ completion: (() -> Void)? = nil, @ZTGenericBuilder<T> _ actions:() -> [T]) {
         rootViewController?.showSheet(title: title, msg: msg, animated: animated, completion: completion, actions: actions)
     }
 }

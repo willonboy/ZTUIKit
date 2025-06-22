@@ -36,67 +36,124 @@ public extension UIView {
 
 @MainActor
 public extension ZTWrapper where Subject : UIView {
+    @discardableResult
     func corner(_ r:CGFloat = 0, clips:Bool = false) -> Self {
         subject.layer.cornerRadius = r
         subject.clipsToBounds = clips
         return self
     }
     
+    /// use like corner(8, [.topLeft, .topRight]
+    @discardableResult
+    func corner(_ r:CGFloat, _ c:UIRectCorner, _ sync:Bool = false) -> Self {
+        return corner(CGSize(width: r, height: r), c, sync)
+    }
+    
+    @discardableResult
+    func corner(_ size:CGSize, _ c:UIRectCorner, _ sync:Bool = false) -> Self {
+        let closure = { [weak v = self.subject] in
+            guard let v else { return }
+            let path = UIBezierPath (
+                // Note: subject.bounds == .zero when using Auto Layout and executing synchronously
+                roundedRect: v.bounds,
+                byRoundingCorners: c,
+                cornerRadii: size
+            )
+            v.layer.mask = CAShapeLayer().zt.path(path.cgPath).build()
+        }
+        if sync {
+            closure()
+        } else {
+            DispatchQueue.main.async {
+                closure()
+            }
+        }
+        return self
+    }
+    
+    @discardableResult
     func maskedCorners(_ m:CACornerMask) -> Self {
         subject.layer.maskedCorners = m
         return self
     }
     
+    @discardableResult
     func cornerCurve(_ c:CALayerCornerCurve) -> Self {
         subject.layer.cornerCurve = c
         return self
     }
     
+    @discardableResult
     func border(_ w:CGFloat = 0, _ c:CGColor? = nil) -> Self {
         subject.layer.borderWidth = w
         subject.layer.borderColor = c
         return self
     }
     
+    @discardableResult
     func opacity(_ o:Float = 1) -> Self {
         subject.layer.opacity = o
         return self
     }
     
+    @discardableResult
     func masksToBounds(_ m:Bool = false) -> Self {
         subject.layer.masksToBounds = m
         return self
     }
     
+    @discardableResult
     func mask(_ m:CALayer? = nil) -> Self {
-        subject.layer.mask = m
+        if let m, m.frame == .zero {
+            DispatchQueue.main.async { [weak v = subject] in
+                guard let v else { return }
+                m.frame = v.bounds
+                v.layer.mask = m
+            }
+        } else {
+            subject.layer.mask = m
+        }
         return self
     }
     
-    func shadow(_ c:CGColor? = nil, o:Float = 0, s:CGSize = .zero, r:CGFloat = 0, p:CGPath? = nil) -> Self {
-        subject.layer.shadowColor = c
-        subject.layer.shadowOpacity = o
-        subject.layer.shadowOffset = s
-        subject.layer.shadowRadius = r
-        subject.layer.shadowPath = p
+    @discardableResult
+    func gradient(_ clrs:[UIColor], frame:CGRect = .zero,
+                  startPoint:CGPoint = .init(x: 1, y: 0),
+                  endPoint:CGPoint = .init(x: 1, y: 1)) -> Self {
+        subject.addLayers {
+            CAGradientLayer(clrs, frame: frame).zt
+                .startPoint(startPoint)
+                .endPoint(endPoint)
+                .build()
+        }
         return self
     }
     
+    @discardableResult
+    func shadow(_ color:CGColor? = nil, opacity:Float = 0, offset:CGSize = .zero, radius:CGFloat = 0, _ path:CGPath? = nil) -> Self {
+        subject.layer.shadowColor = color
+        subject.layer.shadowOpacity = opacity
+        subject.layer.shadowOffset = offset
+        subject.layer.shadowRadius = radius
+        subject.layer.shadowPath = path
+        return self
+    }
+    
+    @discardableResult
     func bgColor(_ c:UIColor? = nil) -> Self {
         subject.backgroundColor = c
         return self
     }
 }
 
-
 @MainActor
 public extension UIView {
     @MainActor
     class ZTGestureHandler {
         public private(set) var isValid:Bool = true
-        public var gesture: UIGestureRecognizer
-        private var onAction: (UIGestureRecognizer, ZTGestureHandler) -> Void
-        public init(gesture: UIGestureRecognizer, onAction: @escaping (UIGestureRecognizer, ZTGestureHandler) -> Void) {
+        public var gesture: UIGestureRecognizer?
+        private var onAction: (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void
+        public init(gesture: UIGestureRecognizer, onAction: @escaping (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void) {
             self.gesture = gesture
             self.onAction = onAction
             gesture.addTarget(self, action: #selector(onGesture(sender:)))
@@ -108,13 +165,14 @@ public extension UIView {
         
         public func cancel() {
             guard isValid else { return }
-            gesture.removeTarget(self, action: #selector(onGesture(sender:)))
+            gesture?.removeTarget(self, action: #selector(onGesture(sender:)))
             isValid = false
+            gesture = nil
         }
     }
     
     @discardableResult
-    func onTap(_ tapCount:Int = 1, tapFinger:Int = 1, _ action:@escaping (UIGestureRecognizer, ZTGestureHandler) -> Void) -> ZTGestureHandler {
+    func onTap(_ tapCount:Int = 1, tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
         let t = UITapGestureRecognizer().zt
             .numberOfTapsRequired(tapCount)
             .numberOfTouchesRequired(tapFinger).build()
@@ -127,7 +185,7 @@ public extension UIView {
     }
     
     @discardableResult
-    func onLongPress(_ tapFinger:Int = 1, _ action:@escaping (UIGestureRecognizer, ZTGestureHandler) -> Void) -> ZTGestureHandler {
+    func onLongPress(_ tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
         let t = UILongPressGestureRecognizer().zt
             .numberOfTouchesRequired(tapFinger).build()
         addGestureRecognizer(t)
@@ -139,7 +197,7 @@ public extension UIView {
     }
     
     @discardableResult
-    func onPan(_ action:@escaping (UIGestureRecognizer, ZTGestureHandler) -> Void) -> ZTGestureHandler {
+    func onPan(_ action:@escaping (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
         let t = UIPanGestureRecognizer()
         addGestureRecognizer(t)
         isUserInteractionEnabled = true
@@ -150,7 +208,7 @@ public extension UIView {
     }
     
     @discardableResult
-    func onSwipe(_ direction:UISwipeGestureRecognizer.Direction = .right, tapFinger:Int = 1, _ action:@escaping (UIGestureRecognizer, ZTGestureHandler) -> Void) -> ZTGestureHandler {
+    func onSwipe(_ direction:UISwipeGestureRecognizer.Direction = .right, tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
         let t = UISwipeGestureRecognizer().zt
             .direction(direction)
             .numberOfTouchesRequired(tapFinger).build()
@@ -185,26 +243,87 @@ public extension UIView {
 @MainActor
 public extension ZTWrapper where Subject : UIView {
     @discardableResult
-    func onTap(_ tapCount:Int = 1, tapFinger:Int = 1, _ action:@escaping (UIGestureRecognizer, UIView.ZTGestureHandler) -> Void) -> Self {
+    func onTap(_ tapCount:Int = 1, tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:UIView.ZTGestureHandler) -> Void) -> Self {
         subject.onTap(tapCount, tapFinger: tapFinger, action)
         return self
     }
     
     @discardableResult
-    func onLongPress(_ tapFinger:Int = 1, _ action:@escaping (UIGestureRecognizer, UIView.ZTGestureHandler) -> Void) -> Self {
+    func onLongPress(_ tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:UIView.ZTGestureHandler) -> Void) -> Self {
         subject.onLongPress(tapFinger, action)
         return self
     }
     
     @discardableResult
-    func onPan(_ action:@escaping (UIGestureRecognizer, UIView.ZTGestureHandler) -> Void) -> Self {
+    func onPan(_ action:@escaping (_ g:UIGestureRecognizer, _ h:UIView.ZTGestureHandler) -> Void) -> Self {
         subject.onPan(action)
         return self
     }
     
     @discardableResult
-    func onSwipe(_ direction:UISwipeGestureRecognizer.Direction = .right, tapFinger:Int = 1, _ action:@escaping (UIGestureRecognizer, UIView.ZTGestureHandler) -> Void) -> Self {
+    func onSwipe(_ direction:UISwipeGestureRecognizer.Direction = .right, tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:UIView.ZTGestureHandler) -> Void) -> Self {
         subject.onSwipe(direction, action)
+        return self
+    }
+}
+
+public extension CALayer {
+    func add<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
+        _ = layers().map { addSublayer($0) }
+    }
+    
+    func insert<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
+        _ = layers().reversed().map { insertSublayer($0, at: 0) }
+    }
+}
+
+public extension CAGradientLayer {
+    convenience init(_ clrs:[UIColor], frame:CGRect = .zero) {
+        self.init()
+        self.frame = frame
+        colors = clrs.map { $0.cgColor }
+    }
+}
+
+public extension UIView {
+    func addLayers<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
+        let ls = layers()
+        // fix self.bounds == .zero when use autolayout
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            _ = ls.map { l in
+                if l.frame == .zero {
+                    l.frame = self.bounds
+                }
+                self.layer.addSublayer(l)
+            }
+        }
+    }
+    
+    func insertLayers<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) {
+        let ls = layers()
+        // fix self.bounds == .zero when use autolayout
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            _ = ls.reversed().map { l in
+                if l.frame == .zero {
+                    l.frame = self.bounds
+                }
+                self.layer.insertSublayer(l, at: 0)
+            }
+        }
+    }
+}
+
+@MainActor
+public extension ZTWrapper where Subject : UIView {
+    func addLayers<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) -> Self {
+        subject.addLayers(layers)
+        return self
+    }
+    
+    func insertLayers<T:CALayer>(@ZTGenericBuilder<T> _ layers:() -> [T]) -> Self {
+        subject.insertLayers(layers)
         return self
     }
 }

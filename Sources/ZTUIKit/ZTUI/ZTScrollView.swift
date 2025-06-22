@@ -22,30 +22,30 @@
 
 import UIKit
 
-public class ZTScrollView: UIScrollView {
+open class ZTScrollView: UIScrollView {
 
-    public var didScrollBlock: ((UIScrollView) -> Void)?
-    public var didZoomBlock: ((UIScrollView) -> Void)?
-    public var willBeginDraggingBlock: ((UIScrollView) -> Void)?
-    public var didEndDraggingBlock: ((UIScrollView, Bool) -> Void)?
-    public var willBeginDeceleratingBlock: ((UIScrollView) -> Void)?
-    public var didEndDeceleratingBlock: ((UIScrollView) -> Void)?
-    public var didEndScrollingAnimationBlock: ((UIScrollView) -> Void)?
-    public var viewForZoomingBlock: ((UIScrollView) -> UIView?)?
-    public var willBeginZoomingBlock: ((UIScrollView, UIView?) -> Void)?
-    public var didEndZoomingBlock: ((UIScrollView, UIView?, CGFloat) -> Void)?
-    public var shouldScrollToTopBlock: ((UIScrollView) -> Bool)?
-    public var didScrollToTopBlock: ((UIScrollView) -> Void)?
+    open var didScrollBlock: ((UIScrollView) -> Void)?
+    open var didZoomBlock: ((UIScrollView) -> Void)?
+    open var willBeginDraggingBlock: ((UIScrollView) -> Void)?
+    open var didEndDraggingBlock: ((UIScrollView, Bool) -> Void)?
+    open var willBeginDeceleratingBlock: ((UIScrollView) -> Void)?
+    open var didEndDeceleratingBlock: ((UIScrollView) -> Void)?
+    open var didEndScrollingAnimationBlock: ((UIScrollView) -> Void)?
+    open var viewForZoomingBlock: ((UIScrollView) -> UIView?)?
+    open var willBeginZoomingBlock: ((UIScrollView, UIView?) -> Void)?
+    open var didEndZoomingBlock: ((UIScrollView, UIView?, CGFloat) -> Void)?
+    open var shouldScrollToTopBlock: ((UIScrollView) -> Bool)?
+    open var didScrollToTopBlock: ((UIScrollView) -> Void)?
 
     // Initializer
-    override public init(frame: CGRect = .zero) {
+    public override init(frame: CGRect = .zero) {
         super.init(frame: frame)
         delegate = self
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator = false
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -53,51 +53,51 @@ public class ZTScrollView: UIScrollView {
 // MARK: - UIScrollViewDelegate
 extension ZTScrollView: UIScrollViewDelegate {
 
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         didScrollBlock?(scrollView)
     }
 
-    public func scrollViewDidZoom(_ scrollView: UIScrollView) {
+    open func scrollViewDidZoom(_ scrollView: UIScrollView) {
         didZoomBlock?(scrollView)
     }
 
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         willBeginDraggingBlock?(scrollView)
     }
 
-    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         didEndDraggingBlock?(scrollView, decelerate)
     }
 
-    public func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+    open func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
         willBeginDeceleratingBlock?(scrollView)
     }
 
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         didEndDeceleratingBlock?(scrollView)
     }
 
-    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+    open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         didEndScrollingAnimationBlock?(scrollView)
     }
 
-    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return viewForZoomingBlock?(scrollView)
     }
 
-    public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+    open func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
         willBeginZoomingBlock?(scrollView, view)
     }
 
-    public func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+    open func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         didEndZoomingBlock?(scrollView, view, scale)
     }
 
-    public func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+    open func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
         return shouldScrollToTopBlock?(scrollView) ?? true
     }
 
-    public func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+    open func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
         didScrollToTopBlock?(scrollView)
     }
 }

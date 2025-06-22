@@ -23,35 +23,39 @@
 import UIKit
 import ZTChain
 
-public extension ZTWrapper where Subject : UIApplication {
-    // just for iPhone iTouch
-    var keyWindow: UIWindow? {
-        for scene in subject.connectedScenes {
+public extension UIApplication {
+    var ztKeyWindow: UIWindow {
+        func isAvaliable(_ window:UIWindow) -> Bool {
+            if window.windowLevel != .normal
+                || window.isHidden
+                || window.isKeyWindow
+                || window.bounds != UIScreen.main.bounds {
+                return false
+            }
+            return true
+        }
+        
+        for scene in connectedScenes {
             if let windowScene = scene as? UIWindowScene,
                windowScene.activationState == .foregroundActive ||
                windowScene.activationState == .background {
                 for window in windowScene.windows {
-                    if window.windowLevel != .normal || window.isHidden {
-                        continue
-                    }
-                    if window.bounds == UIScreen.main.bounds && window.isKeyWindow {
+                    if isAvaliable(window) {
                         return window
                     }
                 }
             }
         }
         
-        var keyWindow: UIWindow? = nil
-        for window in subject.windows {
-            if window.windowLevel == .normal && !window.isHidden && window.bounds == UIScreen.main.bounds && window.isKeyWindow {
-                keyWindow = window
-                break
+        for window in windows {
+            if isAvaliable(window) {
+                return window
             }
         }
         
-        if keyWindow == nil {
-            keyWindow = subject.delegate?.window ?? nil
+        if let w = delegate?.window, let window = w {
+            return window
         }
-        return keyWindow
+        return windows.first!
     }
 }

@@ -22,51 +22,51 @@
 
 import UIKit
 
-public class ZTTextView: UITextView {
-    public var onShouldBeginEditingBlock: (() -> Bool)?
-    public var onDidBeginEditingBlock: (() -> Void)?
-    public var onShouldEndEditingBlock: (() -> Bool)?
-    public var onDidEndEditingBlock: (() -> Void)?
-    public var onShouldChangeTextBlock: ((NSRange, String) -> Bool)?
-    public var onDidChangeBlock: (() -> Void)?
-    public var onDidChangeSelectionBlock: (() -> Void)?
+open class ZTTextView: UITextView {
+    open var onShouldBeginEditingBlock: (() -> Bool)?
+    open var onDidBeginEditingBlock: (() -> Void)?
+    open var onShouldEndEditingBlock: (() -> Bool)?
+    open var onDidEndEditingBlock: (() -> Void)?
+    open var onShouldChangeTextBlock: ((NSRange, String) -> Bool)?
+    open var onDidChangeBlock: (() -> Void)?
+    open var onDidChangeSelectionBlock: (() -> Void)?
     
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         delegate = self
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 extension ZTTextView: UITextViewDelegate {
-    public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+    open func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         onShouldBeginEditingBlock?() ?? true
     }
     
-    public func textViewDidBeginEditing(_ textView: UITextView) {
+    open func textViewDidBeginEditing(_ textView: UITextView) {
         onDidBeginEditingBlock?()
     }
     
-    public func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+    open func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         onShouldEndEditingBlock?() ?? true
     }
     
-    public func textViewDidEndEditing(_ textView: UITextView) {
+    open func textViewDidEndEditing(_ textView: UITextView) {
         onDidEndEditingBlock?()
     }
     
-    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+    open func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         onShouldChangeTextBlock?(range, text) ?? true
     }
     
-    public func textViewDidChange(_ textView: UITextView) {
+    open func textViewDidChange(_ textView: UITextView) {
         onDidChangeBlock?()
     }
     
-    public func textViewDidChangeSelection(_ textView: UITextView) {
+    open func textViewDidChangeSelection(_ textView: UITextView) {
         onDidChangeSelectionBlock?()
     }
 }

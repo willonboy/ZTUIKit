@@ -1,4 +1,5 @@
 {
+  "originHash" : "07bd3651c8b135e67228d777711328ab2aa2b51bbdb3b35fca149d83b0fba74c",
   "pins" : [
     {
       "identity" : "snapkit",
@@ -28,15 +29,6 @@
       }
     },
     {
-      "identity" : "ztgenericbuilder",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/willonboy/ZTGenericBuilder",
-      "state" : {
-        "revision" : "e5937986e59120d1a2ea27cffa939f1511721776",
-        "version" : "1.0.0"
-      }
-    },
-    {
       "identity" : "ztstyle",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/willonboy/ZTStyle",
@@ -46,5 +38,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

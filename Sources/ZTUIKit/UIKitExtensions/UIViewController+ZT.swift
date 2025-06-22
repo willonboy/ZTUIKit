@@ -21,38 +21,21 @@
 
 
 import UIKit
-import ZTGenericBuilder
-
-public protocol ZTAlertItemProtocol {}
-
-extension UIAlertAction : ZTAlertItemProtocol {}
-public typealias ZTAlertItemBuilder = ZTGenericBuilder<any ZTAlertItemProtocol>
-
 
 public extension UIViewController {
-    func alert(title:String = "", msg:String = "", animated:Bool = true, completion: (() -> Void)? = nil, @ZTAlertItemBuilder actions:() -> [any ZTAlertItemProtocol]) {
+    func alert<T:UIAlertAction>(title:String = "", msg:String = "", animated:Bool = true, completion: (() -> Void)? = nil, @ZTGenericBuilder<T> actions:() -> [T]) {
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .alert)
-        let items = actions()
-        items.forEach {
-            if let a = $0 as? UIAlertAction {
-                alert.addAction(a)
-            }
-        }
+        actions().forEach { alert.addAction($0) }
         present(alert, animated: animated, completion: completion)
     }
     
-    func showSheet(title:String = "", msg:String = "", animated:Bool = true, completion: (() -> Void)? = nil, @ZTAlertItemBuilder actions:() -> [any ZTAlertItemProtocol]) {
+    func showSheet<T:UIAlertAction>(title:String = "", msg:String = "", animated:Bool = true, completion: (() -> Void)? = nil, @ZTGenericBuilder<T> actions:() -> [T]) {
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .actionSheet)
-        let items = actions()
-        items.forEach {
-            if let a = $0 as? UIAlertAction {
-                alert.addAction(a)
-            }
-        }
+        actions().forEach { alert.addAction($0) }
         present(alert, animated: animated, completion: completion)
     }
     
-    func present(_ animated: Bool = true, _ completion: (() -> Void)? = nil, @ZTVCBuilder _ vc: () -> UIViewController) {
+    func present<T:UIViewController>(_ animated: Bool = true, _ completion: (() -> Void)? = nil, @ZTGenericBuilder<T> _ vc: () -> T) {
         present(vc(), animated: animated, completion: completion)
     }
 }

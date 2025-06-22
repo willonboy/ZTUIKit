@@ -21,7 +21,6 @@
 
 
 import UIKit
-import ZTGenericBuilder
 
 public typealias ZTVCBuilder = ZTGenericBuilder<UIViewController>
 

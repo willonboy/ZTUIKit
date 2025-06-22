@@ -22,19 +22,8 @@
 
 import UIKit
 import ZTChain
-import ZTGenericBuilder
 
 public typealias ZTWidgetBuilder = ZTGenericBuilder<any ZTWidgetProtocol>
-
-@MainActor
-@objc public protocol ZTWidgetBaseProtocol : AnyObject {
-    var view: UIView { get }
-}
-extension UIView : ZTWidgetBaseProtocol {
-    public var view: UIView {
-        self
-    }
-}
 
 @MainActor
 public extension UIView {
@@ -64,6 +53,7 @@ public extension UIView {
         add(ws)
     }
     
+    @discardableResult
     func add(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) -> Self {
         let subWidgets = widgets()
         add(subWidgets)
@@ -76,10 +66,18 @@ public extension UIView {
         }
     }
     
+    func bacground(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) -> Self {
+        let widgets = widgets()
+        for widget in widgets.reversed() {
+            subWidgets.insert(widget, at: 0)
+        }
+        return self
+    }
+    
     func removeWidgets(_ widgets: [any ZTWidgetProtocol]) {
         for widget in widgets {
             widget.willBeRemoved()
-            widget.view.removeFromSuperview()
+            widget.removeFromSuperview()
             widget.didRemoved()
             subWidgets.removeAll { $0 === widget }
         }
@@ -88,7 +86,7 @@ public extension UIView {
     func cleanSubWidgets() {
         for widget in subWidgets {
             widget.willBeRemoved()
-            widget.view.removeFromSuperview()
+            widget.removeFromSuperview()
             widget.didRemoved()
         }
         subWidgets.removeAll()
@@ -96,7 +94,7 @@ public extension UIView {
 }
 
 @MainActor
-@objc public protocol ZTWidgetProtocol where Self : ZTWidgetBaseProtocol {
+@objc public protocol ZTWidgetProtocol where Self : UIView {
     @objc func willBeAdded()
     @objc func didAdded()
     @objc func willBeRemoved()
@@ -112,7 +110,7 @@ extension UIView : ZTWidgetProtocol {
     private static var zt_onDidRemovedClosuresKey: UInt8 = 0
     private static var zt_onWillRenderClosuresKey: UInt8 = 0
     private static var zt_onDidRenderClosuresKey: UInt8 = 0
-    public var onWillBeAddedBlock: ((_ v:UIView)->Void)? {
+    public var onWillBeAdded: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onWillBeAddedClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -120,7 +118,7 @@ extension UIView : ZTWidgetProtocol {
             objc_setAssociatedObject(self, &Self.zt_onWillBeAddedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var onDidAddedBlock: ((_ v:UIView)->Void)? {
+    public var onDidAdded: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onDidAddedClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -128,7 +126,7 @@ extension UIView : ZTWidgetProtocol {
             objc_setAssociatedObject(self, &Self.zt_onDidAddedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var onWillBeRemovedBlock: ((_ v:UIView)->Void)? {
+    public var onWillBeRemoved: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onWillBeRemovedClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -136,7 +134,7 @@ extension UIView : ZTWidgetProtocol {
             objc_setAssociatedObject(self, &Self.zt_onWillBeRemovedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var onDidRemovedBlock: ((_ v:UIView)->Void)? {
+    public var onDidRemoved: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onDidRemovedClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -144,7 +142,7 @@ extension UIView : ZTWidgetProtocol {
             objc_setAssociatedObject(self, &Self.zt_onDidRemovedClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var onWillRenderBlock: ((_ v:UIView)->Void)? {
+    public var onWillRender: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onWillRenderClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -152,7 +150,7 @@ extension UIView : ZTWidgetProtocol {
             objc_setAssociatedObject(self, &Self.zt_onWillRenderClosuresKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var onDidRenderBlock: ((_ v:UIView)->Void)? {
+    public var onDidRender: ((_ v:UIView)->Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onDidRenderClosuresKey) as? ((_ v:UIView)->Void)
         }
@@ -161,25 +159,25 @@ extension UIView : ZTWidgetProtocol {
         }
     }
     
-    /// Note: A custom subclass of UIView must call these blocks itself.
-    public func willBeAdded() { onWillBeAddedBlock?(self) }
-    public func didAdded() { onDidAddedBlock?(self) }
-    public func willBeRemoved() { onWillBeRemovedBlock?(self) }
-    public func didRemoved() { onDidRemovedBlock?(self) }
-    public func ztRender() {
-        onWillRenderBlock?(self)
+    /// Note: A custom subclass of UIView must call these closures itself.
+    open func willBeAdded() { onWillBeAdded?(self) }
+    open func didAdded() { _ = domId; onDidAdded?(self) }
+    open func willBeRemoved() { onWillBeRemoved?(self) }
+    open func didRemoved() { onDidRemoved?(self) }
+    open func ztRender() {
+        onWillRender?(self)
         bindConstraints()
         for widget in subWidgets {
             widget.willBeAdded()
             if let stack = self as? UIStackView {
-                stack.addArrangedSubview(widget.view)
+                stack.addArrangedSubview(widget)
             } else {
-                addSubview(widget.view)
+                addSubview(widget)
             }
             widget.didAdded()
             widget.ztRender()
         }
-        onDidRenderBlock?(self)
+        onDidRender?(self)
     }
 }
 
@@ -188,11 +186,11 @@ extension UIView {
     
     @MainActor
     func zt_find(_ domId:String) -> UIView? {
-        // Only query one level down.
-        if let weakBox = self.domIdMap[domId], let v = weakBox.value {
+        // Query the descendants. Only query one level down.
+        if let weakBox = self.domIdMap[domId], let v = weakBox.value, v.superview != nil {
             return v
         }
-        if let v = subviews.first(where: { $0.domId == domId }) {
+        if let v = subviews.first(where: { $0.domId == domId }), v.superview != nil {
             return v
         }
 #if DEBUG
@@ -202,10 +200,10 @@ extension UIView {
         // Only query the views of the immediate ancestral-level relationships upwards.
         var s = superview
         repeat {
-            if let weakBox = s?.domIdMap[domId], let v = weakBox.value {
+            if let weakBox = s?.domIdMap[domId], let v = weakBox.value, v.superview != nil {
                 return v
             }
-            if let v = s?.subviews.first(where: { $0.domId == domId }) {
+            if let v = s?.subviews.first(where: { $0.domId == domId }), v.superview != nil {
                 return v
             }
             s = s?.superview
@@ -308,7 +306,7 @@ open class ZTVStack: UIStackView {
 }
 
 @MainActor
-public class ZTSpacer : UIView {
+open class ZTSpacer : UIView {
     public enum Axis {
         case h, v
     }
@@ -321,7 +319,9 @@ public class ZTSpacer : UIView {
                 setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             } else {
                 super.init(frame:CGRectMake(0, 0, spacing, 1))
-                widthAnchor.constraint(equalToConstant: spacing).isActive = true
+                let wc = widthAnchor.constraint(equalToConstant: spacing)
+                wc.priority = .required
+                wc.isActive = true
             }
         } else {
             if abs(spacing) < 0.001 {
@@ -330,13 +330,15 @@ public class ZTSpacer : UIView {
                 setContentCompressionResistancePriority(.defaultLow, for: .vertical)
             } else {
                 super.init(frame:CGRectMake(0, 0, 1, spacing))
-                heightAnchor.constraint(equalToConstant: spacing).isActive = true
+                let hc = heightAnchor.constraint(equalToConstant: spacing)
+                hc.priority = .required
+                hc.isActive = true
             }
         }
         translatesAutoresizingMaskIntoConstraints = false
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -352,6 +354,12 @@ public extension ZTWrapper where Subject: UIView {
     @discardableResult
     func addTo(_ superview:UIView) -> Self {
         superview.addSubview(subject)
+        return self
+    }
+    
+    @discardableResult
+    func add(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) -> Self {
+        subject.add(widgets)
         return self
     }
 }

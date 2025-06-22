@@ -214,4 +214,84 @@ public extension UIView {
     }
 }
 
+
+@MainActor
+public extension UIView {
+    @discardableResult
+    func equal(_ to: UIView) -> Self {
+       Left == to.Left
+       Right == to.Right
+       Top == to.Top
+       Bottom == to.Bottom
+       return self
+    }
+    
+    @discardableResult
+    func equalW(_ to: UIView) -> Self {
+        Width == to.Width
+        return self
+    }
+    
+    @discardableResult
+    func equalH(_ to: UIView) -> Self {
+        Height == to.Height
+        return self
+    }
+    
+    @discardableResult
+    func equalTop(_ to: UIView) -> Self {
+        Top == to.Top
+        return self
+    }
+    
+    @discardableResult
+    func equalBtm(_ to: UIView) -> Self {
+        Bottom == to.Bottom
+        return self
+    }
+    
+    @discardableResult
+    func equalLeft(_ to: UIView) -> Self {
+        Left == to.Left
+        return self
+    }
+    
+    @discardableResult
+    func equalRight(_ to: UIView) -> Self {
+        Right == to.Right
+        return self
+    }
+    
+    @discardableResult
+    func equalTrailing(_ to: UIView) -> Self {
+        Trailing == to.Trailing
+        return self
+    }
+    
+    @discardableResult
+    func equalLeading(_ to: UIView) -> Self {
+        Leading == to.Leading
+        return self
+    }
+    
+    @discardableResult
+    func equalCenterXY(_ to: UIView) -> Self {
+        CenterX == to.CenterX
+        CenterY == to.CenterY
+        return self
+    }
+    
+    @discardableResult
+    func equalCenterX(_ to: UIView) -> Self {
+        CenterX == to.CenterX
+        return self
+    }
+    
+    @discardableResult
+    func equalCenterY(_ to: UIView) -> Self {
+        CenterY == to.CenterY
+        return self
+    }
+}
+
 #endif
