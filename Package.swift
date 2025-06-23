@@ -12,8 +12,8 @@ let package = Package(
             targets: ["ZTUIKit"]),
     ],
     dependencies: [
-         .package(url: "https://github.com/willonboy/ZTChain", from: "1.0.4"),
-         .package(url: "https://github.com/willonboy/ZTStyle", from: "2.0.0"),
+         .package(url: "https://github.com/willonboy/ZTChain", branch: "main"),
+         .package(url: "https://github.com/willonboy/ZTStyle", branch: "main"),
     ],
     targets: [
         .target(

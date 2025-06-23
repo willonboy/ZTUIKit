@@ -52,18 +52,18 @@ public extension ZTWrapper where Subject: UIView {
     
     @MainActor
     @discardableResult
-    func remakeSnapkit(_ closure: @escaping ZTSnapkitLayoutClosure) -> Self {
+    func remakeSnapkit(_ closure: ZTSnapkitLayoutClosure) -> Self {
         self.subject.snp.remakeConstraints { make in
-            closure(make, self.subject.zt_find)
+            closure(make, self.subject.zt_findOneLevelDownAndAncestorsByDomId)
         }
         return self
     }
     
     @MainActor
     @discardableResult
-    func updateSnapkit(_ closure: @escaping ZTSnapkitLayoutClosure) -> Self {
+    func updateSnapkit(_ closure: ZTSnapkitLayoutClosure) -> Self {
         self.subject.snp.updateConstraints { make in
-            closure(make, self.subject.zt_find)
+            closure(make, self.subject.zt_findOneLevelDownAndAncestorsByDomId)
         }
         return self
     }

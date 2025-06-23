@@ -22,22 +22,20 @@
 
 import UIKit
 
-public typealias ZTVCBuilder = ZTGenericBuilder<UIViewController>
-
 public extension UINavigationController {
     
-    convenience init(_ hideNavBar:Bool = false, @ZTVCBuilder _ root: () -> UIViewController) {
+    convenience init<T:UIViewController>(_ hideNavBar:Bool = false, @ZTGenericBuilder<T> _ root: () -> T) {
         self.init(rootViewController: root())
         isNavigationBarHidden = hideNavBar
     }
     
-    convenience init(_ hideNavBar:Bool = false, @ZTVCBuilder _ vcs: () -> [UIViewController]) {
+    convenience init<T:UIViewController>(_ hideNavBar:Bool = false, @ZTGenericBuilder<T> _ vcs: () -> [T]) {
         self.init()
         viewControllers = vcs()
         isNavigationBarHidden = hideNavBar
     }
     
-    func push(_ animated:Bool = true, @ZTVCBuilder _ vc: () -> UIViewController) {
+    func push<T:UIViewController>(_ animated:Bool = true, @ZTGenericBuilder<T> _ vc: () -> T) {
         pushViewController(vc(), animated: animated)
     }
 }

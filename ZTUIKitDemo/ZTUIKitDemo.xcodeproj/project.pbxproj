@@ -422,8 +422,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/willonboy/ZTChain";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.5;
+				branch = main;
+				kind = branch;
 			};
 		};
 		977A633C2CF2F0CB00C08E46 /* XCRemoteSwiftPackageReference "ZTStyle" */ = {

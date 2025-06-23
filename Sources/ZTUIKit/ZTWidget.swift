@@ -23,18 +23,18 @@
 import UIKit
 import ZTChain
 
-public typealias ZTWidgetBuilder = ZTGenericBuilder<any ZTWidgetProtocol>
+public typealias ZTWidgetBuilder = ZTGenericBuilder<UIView>
 
 @MainActor
 public extension UIView {
     private static var zt_subWidgetsKey: UInt8 = 0
-    fileprivate var subWidgets: [any ZTWidgetProtocol] {
+    fileprivate var subWidgets: [UIView] {
         get {
             assert(Thread.isMainThread)
-            if let arr = objc_getAssociatedObject(self, &Self.zt_subWidgetsKey) as? [any ZTWidgetProtocol] {
+            if let arr = objc_getAssociatedObject(self, &Self.zt_subWidgetsKey) as? [UIView] {
                 return arr
             }
-            let arr:[any ZTWidgetProtocol] = []
+            let arr:[UIView] = []
             objc_setAssociatedObject(self, &Self.zt_subWidgetsKey, arr, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return arr
         }
@@ -44,29 +44,29 @@ public extension UIView {
         }
     }
     
-    convenience init(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) {
+    convenience init<T: UIView>(@ZTWidgetBuilder _ widgets: () -> [T]) {
         self.init(ws: widgets())
     }
     
-    convenience init(_ frame:CGRect? = nil, ws: [any ZTWidgetProtocol]) {
+    convenience init<T: UIView>(_ frame:CGRect? = nil, ws: [T]) {
         self.init(frame: .zero)
         add(ws)
     }
     
     @discardableResult
-    func add(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) -> Self {
+    func add<T: UIView>(@ZTWidgetBuilder _ widgets: () -> [T]) -> Self {
         let subWidgets = widgets()
         add(subWidgets)
         return self
     }
     
-    func add(_ widgets:[any ZTWidgetProtocol]) {
+    func add<T: UIView>(_ widgets:[T]) {
         for widget in widgets {
             subWidgets.append(widget)
         }
     }
     
-    func bacground(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) -> Self {
+    func bacground<T: UIView>(@ZTWidgetBuilder _ widgets: () -> [T]) -> Self {
         let widgets = widgets()
         for widget in widgets.reversed() {
             subWidgets.insert(widget, at: 0)
@@ -74,7 +74,7 @@ public extension UIView {
         return self
     }
     
-    func removeWidgets(_ widgets: [any ZTWidgetProtocol]) {
+    func removeWidgets<T: UIView>(_ widgets: [T]) {
         for widget in widgets {
             widget.willBeRemoved()
             widget.removeFromSuperview()
@@ -185,7 +185,34 @@ extension UIView {
     private static var zt_domIdKey: UInt8 = 0
     
     @MainActor
-    func zt_find(_ domId:String) -> UIView? {
+    func zt_findSubviewByDomIdInHierarchy(_ domId: String, startingFrom view: UIView? = nil) -> UIView? {
+        let searchView = view ?? self
+        if let weakBox = searchView.domIdMap[domId], let foundView = weakBox.value, foundView.superview != nil {
+            return foundView
+        }
+        
+        if searchView.domId == domId {
+            return searchView
+        }
+
+        var queue = [searchView]
+        while !queue.isEmpty {
+            let currentView = queue.removeFirst()
+            for subview in currentView.subviews {
+                if let weakBox = subview.domIdMap[domId], let foundView = weakBox.value, foundView.superview != nil {
+                    return foundView
+                }
+                if subview.domId == domId {
+                    return subview
+                }
+                queue.append(subview)
+            }
+        }
+        return nil
+    }
+    
+    @MainActor
+    func zt_findOneLevelDownAndAncestorsByDomId(_ domId:String) -> UIView? {
         // Query the descendants. Only query one level down.
         if let weakBox = self.domIdMap[domId], let v = weakBox.value, v.superview != nil {
             return v
@@ -269,7 +296,7 @@ extension UIView {
 
 @MainActor
 public extension UIStackView {
-    convenience init(_ frame:CGRect? = nil, space:CGFloat = 0, align:Alignment? = nil, dist:Distribution? = nil, @ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) {
+    convenience init<T:UIView>(_ frame:CGRect? = nil, space:CGFloat = 0, align:Alignment? = nil, dist:Distribution? = nil, @ZTWidgetBuilder _ widgets: () -> [T]) {
         self.init(frame, ws:widgets())
         spacing = space
         if let a = align {
@@ -347,8 +374,8 @@ open class ZTSpacer : UIView {
 public extension ZTWrapper where Subject: UIView {
     @discardableResult
     func render() -> Subject {
-        self.subject.ztRender()
-        return self.subject
+        subject.ztRender()
+        return subject
     }
     
     @discardableResult
@@ -358,7 +385,7 @@ public extension ZTWrapper where Subject: UIView {
     }
     
     @discardableResult
-    func add(@ZTWidgetBuilder _ widgets: () -> [any ZTWidgetProtocol]) -> Self {
+    func add<T:UIView>(@ZTWidgetBuilder _ widgets: () -> [T]) -> Self {
         subject.add(widgets)
         return self
     }

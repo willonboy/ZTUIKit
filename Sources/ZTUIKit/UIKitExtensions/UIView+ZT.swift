@@ -150,29 +150,32 @@ public extension ZTWrapper where Subject : UIView {
 public extension UIView {
     @MainActor
     class ZTGestureHandler {
-        public private(set) var isValid:Bool = true
-        public var gesture: UIGestureRecognizer?
-        private var onAction: (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void
-        public init(gesture: UIGestureRecognizer, onAction: @escaping (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void) {
+        public private(set) var gesture: UIGestureRecognizer
+        private var onAction: ((_ h:ZTGestureHandler) -> Void)?
+        fileprivate var onCancel:(() -> Void)?
+        fileprivate private(set) var isValid:Bool = true
+        public init(gesture: UIGestureRecognizer, onAction: @escaping (_ h:ZTGestureHandler) -> Void) {
             self.gesture = gesture
             self.onAction = onAction
             gesture.addTarget(self, action: #selector(onGesture(sender:)))
         }
         
         @objc func onGesture(sender:UIGestureRecognizer) {
-            onAction(sender, self)
+            onAction?(self)
         }
         
         public func cancel() {
             guard isValid else { return }
-            gesture?.removeTarget(self, action: #selector(onGesture(sender:)))
             isValid = false
-            gesture = nil
+            gesture.removeTarget(self, action: #selector(onGesture(sender:)))
+            gesture.view?.removeGestureRecognizer(gesture)
+            onAction = nil
+            onCancel?()
         }
     }
     
     @discardableResult
-    func onTap(_ tapCount:Int = 1, tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
+    func onTap(_ tapCount:Int = 1, tapFinger:Int = 1, _ action:@escaping (_ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
         let t = UITapGestureRecognizer().zt
             .numberOfTapsRequired(tapCount)
             .numberOfTouchesRequired(tapFinger).build()
@@ -180,35 +183,44 @@ public extension UIView {
         isUserInteractionEnabled = true
         
         let h = ZTGestureHandler(gesture: t, onAction: action)
+        h.onCancel = { [weak self] in
+            self?.removeGestureHandler(h)
+        }
         recordGestureHandler(h)
         return h
     }
     
     @discardableResult
-    func onLongPress(_ tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
+    func onLongPress(_ tapFinger:Int = 1, _ action:@escaping (_ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
         let t = UILongPressGestureRecognizer().zt
             .numberOfTouchesRequired(tapFinger).build()
         addGestureRecognizer(t)
         isUserInteractionEnabled = true
         
         let h = ZTGestureHandler(gesture: t, onAction: action)
+        h.onCancel = { [weak self] in
+            self?.removeGestureHandler(h)
+        }
         recordGestureHandler(h)
         return h
     }
     
     @discardableResult
-    func onPan(_ action:@escaping (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
+    func onPan(_ action:@escaping (_ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
         let t = UIPanGestureRecognizer()
         addGestureRecognizer(t)
         isUserInteractionEnabled = true
         
         let h = ZTGestureHandler(gesture: t, onAction: action)
+        h.onCancel = { [weak self] in
+            self?.removeGestureHandler(h)
+        }
         recordGestureHandler(h)
         return h
     }
     
     @discardableResult
-    func onSwipe(_ direction:UISwipeGestureRecognizer.Direction = .right, tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
+    func onSwipe(_ direction:UISwipeGestureRecognizer.Direction = .right, tapFinger:Int = 1, _ action:@escaping (_ h:ZTGestureHandler) -> Void) -> ZTGestureHandler {
         let t = UISwipeGestureRecognizer().zt
             .direction(direction)
             .numberOfTouchesRequired(tapFinger).build()
@@ -216,6 +228,9 @@ public extension UIView {
         isUserInteractionEnabled = true
         
         let h = ZTGestureHandler(gesture: t, onAction: action)
+        h.onCancel = { [weak self] in
+            self?.removeGestureHandler(h)
+        }
         recordGestureHandler(h)
         return h
     }
@@ -229,8 +244,12 @@ public extension UIView {
         gestureHandlers?.append(handler)
     }
     
+    private func removeGestureHandler(_ handler: ZTGestureHandler) {
+        gestureHandlers?.removeAll(where: { $0 === handler })
+    }
+    
     private static var zt_gestureHandlersKey: UInt8 = 0
-    var gestureHandlers: [ZTGestureHandler]? {
+    private var gestureHandlers: [ZTGestureHandler]? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_gestureHandlersKey) as? [ZTGestureHandler]
         }
@@ -243,25 +262,25 @@ public extension UIView {
 @MainActor
 public extension ZTWrapper where Subject : UIView {
     @discardableResult
-    func onTap(_ tapCount:Int = 1, tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:UIView.ZTGestureHandler) -> Void) -> Self {
+    func onTap(_ tapCount:Int = 1, tapFinger:Int = 1, _ action:@escaping (_ h:UIView.ZTGestureHandler) -> Void) -> Self {
         subject.onTap(tapCount, tapFinger: tapFinger, action)
         return self
     }
     
     @discardableResult
-    func onLongPress(_ tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:UIView.ZTGestureHandler) -> Void) -> Self {
+    func onLongPress(_ tapFinger:Int = 1, _ action:@escaping (_ h:UIView.ZTGestureHandler) -> Void) -> Self {
         subject.onLongPress(tapFinger, action)
         return self
     }
     
     @discardableResult
-    func onPan(_ action:@escaping (_ g:UIGestureRecognizer, _ h:UIView.ZTGestureHandler) -> Void) -> Self {
+    func onPan(_ action:@escaping (_ h:UIView.ZTGestureHandler) -> Void) -> Self {
         subject.onPan(action)
         return self
     }
     
     @discardableResult
-    func onSwipe(_ direction:UISwipeGestureRecognizer.Direction = .right, tapFinger:Int = 1, _ action:@escaping (_ g:UIGestureRecognizer, _ h:UIView.ZTGestureHandler) -> Void) -> Self {
+    func onSwipe(_ direction:UISwipeGestureRecognizer.Direction = .right, tapFinger:Int = 1, _ action:@escaping (_ h:UIView.ZTGestureHandler) -> Void) -> Self {
         subject.onSwipe(direction, action)
         return self
     }

@@ -47,7 +47,7 @@ public extension UIButton {
     
     convenience init(_ title:String? = nil, sysFont:CGFloat? = nil, font:UIFont? = nil, color:UIColor? = nil, img:UIImage? = nil, bgImg:UIImage? = nil, _ onClick:((UIButton) -> Void)? = nil) {
         self.init(type:.custom)
-        self.onClick = onClick
+        self.onClickClosure = onClick
         
         setTitle(title, for: .normal)
         setImage(img, for: .normal)
@@ -60,7 +60,7 @@ public extension UIButton {
     }
     
     private static var zt_onClickClosureKey: UInt8 = 0
-    var onClick: ((UIButton) -> Void)? {
+    var onClickClosure: ((UIButton) -> Void)? {
         get {
             return objc_getAssociatedObject(self, &Self.zt_onClickClosureKey) as? ((UIButton) -> Void)
         }
@@ -72,7 +72,7 @@ public extension UIButton {
     }
     
     @objc private func onClickHandle() {
-        onClick?(self)
+        onClickClosure?(self)
     }
 }
 
@@ -128,15 +128,6 @@ public extension ZTWrapper where Subject : UIButton {
     @discardableResult
     func font(_ sysFont:CGFloat, weight:UIFont.Weight? = nil) -> Self {
         subject.titleLabel?.font = .systemFont(ofSize: sysFont, weight: weight ?? .regular)
-        return self
-    }
-}
-
-public extension ZTWrapper where Subject : UIButton {
-    @MainActor
-    @discardableResult
-    func onClick(_ action:@escaping (_ b:UIButton) -> Void) -> Self {
-        subject.onClick = action
         return self
     }
 }

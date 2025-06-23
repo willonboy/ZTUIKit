@@ -19,7 +19,6 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
 
-
 import UIKit
 #if canImport(Stevia)
 import Stevia
@@ -42,7 +41,7 @@ public extension UIView {
         if let closures = self.snpLayoutClosures {
             assert(superview != nil)
             self.snp.makeConstraints { make in
-                closures(make, self.zt_find)
+                closures(make, self.zt_findOneLevelDownAndAncestorsByDomId)
             }
             self.snpLayoutClosures = nil
             return
@@ -54,7 +53,7 @@ public extension UIView {
             //if self.next is UIViewController == false, self is UIWindow == false  {
                 translatesAutoresizingMaskIntoConstraints = false
             //}
-            closures(self, self.zt_find)
+            closures(self, self.zt_findOneLevelDownAndAncestorsByDomId)
             self.steviaLayoutClosures = nil
         }
 #endif

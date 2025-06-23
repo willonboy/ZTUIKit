@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/willonboy/ZTChain",
       "state" : {
-        "revision" : "a89c1c65ac1dcb4925e64a28646795451ec64b5c",
-        "version" : "1.0.5"
+        "branch" : "main",
+        "revision" : "e24519da1b91dad33a2e7575f6f5511dc446bdd3"
       }
     },
     {
