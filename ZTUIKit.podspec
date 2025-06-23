@@ -22,7 +22,6 @@ Pod::Spec.new do |s|
   
   s.dependency 'ZTChain', '~> 1.0.2'
   s.dependency 'ZTStyle', '~> 2.0.0'
-  s.dependency 'ZTGenericBuilder'
   s.default_subspec = 'Default'
 
   s.subspec 'Default' do |ss| 
